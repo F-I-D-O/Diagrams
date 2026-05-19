@@ -12,6 +12,14 @@ classes: {
 
     }
   }
+
+  arrow: {
+    style: {
+      font-size: 25
+      italic: false
+      bold: true
+    }
+  }
   
 }
 
@@ -21,27 +29,36 @@ arraylist.shape: rectangle
 dict: dict
 dict.shape: rectangle
 
-do_you_need_maping_index_value_or_ke: Do you need \n index->value mapping \n or searching in collection? {
+do_you_need_maping_index_value_or_ke: Do you need \n index->value mapping? \n (searching in collection, ...) {
+  class: decision
+}
+do_you_need_maping_index_value_or_ke -> searching_by_index_key: Yes{
+  class: arrow
+}
+
+do_you_need_the_keys_to_be_ordered: Do you need the keys to be ordered? {
   class: decision
 }
 
-do_you_need_the_keys_to_be_ordered: Do you need the keys to be ordered?
-do_you_need_the_keys_to_be_ordered.shape: diamond
+do_you_need_to_check_if_the_collection_c: Do you need to check if the collection contains some membr often? {
+  class: decision
+}
 
-do_you_need_to_check_if_the_collection_c: Do you need to check if the collection contains some membr often?
-do_you_need_to_check_if_the_collection_c.shape: diamond
+do_you_need_to_iterate_over_the_collecti: Do you need to iterate over the collection, or maintain the insertion order? {
+  class: decision
+}
 
-do_you_need_to_iterate_over_the_collecti: Do you need to iterate over the collection, or maintain the insertion order?
-do_you_need_to_iterate_over_the_collecti.shape: diamond
+do_you_need_to_iterate_over_the_collecti_2: Do you need to iterate over the collection, or maintain the insertion order? {
+  class: decision
+}
 
-do_you_need_to_iterate_over_the_collecti_2: Do you need to iterate over the collection, or maintain the insertion order?
-do_you_need_to_iterate_over_the_collecti_2.shape: diamond
+do_you_need_to_remove_from_the_collectio: Do you need to remove from the collection often? {
+  class: decision
+}
 
-do_you_need_to_remove_from_the_collectio: Do you need to remove from the collection often?
-do_you_need_to_remove_from_the_collectio.shape: diamond
-
-fixed_size_known_at_compile_time: Fixed size known at compile time?
-fixed_size_known_at_compile_time.shape: diamond
+fixed_size_known_at_compile_time: Fixed size known at compile time? {
+  class: decision
+}
 
 hashmap: HashMap
 hashmap.shape: rectangle
@@ -52,19 +69,23 @@ hashset.shape: rectangle
 heterogenous_objects: |md
   Heterogenous 
   Objects?
-|
-heterogenous_objects.shape: diamond
+| {
+  class: decision
+}
 
-implicitely_default_constructible_object: Implicitely default-constructible objects?
-implicitely_default_constructible_object.shape: diamond
+implicitely_default_constructible_object: Implicitely default-constructible objects? {
+  class: decision
+}
 
-indexes_are_natural_numbers_and_almost_a: Indexes are natural numbers and almost all/all indexes are used.
-indexes_are_natural_numbers_and_almost_a.shape: diamond
+indexes_are_natural_numbers_and_almost_a: Indexes are natural numbers and almost all/all indexes are used. {
+  class: decision
+}
 
 java_there_is_no_tuple_in_java_create: "Java: there is no tuple in java-> Create your own wrapperclass or use a [Record](https://docs.oracle.com/en/java/javase/16/language/records.html)"
 
-just_two_objects: Just two objects?
-just_two_objects.shape: diamond
+just_two_objects: Just two objects? {
+  class: decision
+}
 
 linkedhashmap: LinkedHashMap
 linkedhashmap.shape: rectangle
@@ -84,8 +105,9 @@ memory_critical_and_contains_primitive: |md
   Memory critical 
   AND
   contains primitive types (int, float)?
-|
-memory_critical_and_contains_primitive.shape: diamond
+| {
+  class: decision
+}
 
 no: No
 
@@ -111,14 +133,17 @@ queue_queue: queue.Queue
 queue_queue.shape: rectangle
 queue_queue.link: https://docs.python.org/3/library/queue.html
 
-removal_type: Removal Type
-removal_type.shape: diamond
+removal_type: Removal Type {
+  class: decision
+}
 
-search_by: search by:
-search_by.shape: diamond
+search_by: search by: {
+  class: decision
+}
 
-searching_by_index_key: Searching by index/key
-searching_by_index_key.shape: diamond
+searching_by_index_key: Searching by index/key {
+  class: decision
+}
 
 set: set
 set.shape: rectangle
@@ -179,7 +204,7 @@ use_tuple: Use tuple
 
 # --- edges ---
 
-do_you_need_maping_index_value_or_ke -> searching_by_index_key: Yes
+
 indexes_are_natural_numbers_and_almost_a -> do_you_need_the_keys_to_be_ordered: No
 use_dicttionary_hash_map -> hashmap: Java
 use_dicttionary_hash_map -> dict: Python
