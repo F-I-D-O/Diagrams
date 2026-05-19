@@ -6,8 +6,11 @@ direction: down
 classes: {
   decision: {
     shape: diamond
-    width: 100
-    height: 100
+    width: 300
+    height: 300
+    label: {
+
+    }
   }
   
 }
@@ -18,11 +21,9 @@ arraylist.shape: rectangle
 dict: dict
 dict.shape: rectangle
 
-do_you_need_maping_index_value_or_ke: |md
-  Do you need maping
-  (index-> value, or key->value) or searching in collection?
-|
-do_you_need_maping_index_value_or_ke.class: decision
+do_you_need_maping_index_value_or_ke: Do you need \n index->value mapping \n or searching in collection? {
+  class: decision
+}
 
 do_you_need_the_keys_to_be_ordered: Do you need the keys to be ordered?
 do_you_need_the_keys_to_be_ordered.shape: diamond
