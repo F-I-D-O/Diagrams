@@ -151,20 +151,23 @@ heterogenous_values -> tuple: Yes {
 heterogenous_values -> java_record: Yes, Java {
   class: arrow
 }
-heterogenous_values -> is_member_default_constructible: No {
+heterogenous_values -> array: No {
+  class: arrow
+}
+heterogenous_values -> is_member_default_constructible: No, C++ {
   class: arrow
 }
 
 dynamic_array_continuous_memory: Dynamic array with \n continuous memory {
   class: collection_type
 }
-dynamic_array_continuous_memory -> fastutils: Java {
+dynamic_array_continuous_memory -> std_vector: C++ {
   class: arrow
 }
 dynamic_array_continuous_memory -> python_array: Python {
   class: arrow
 }
-dynamic_array_continuous_memory -> std_vector: C++ {
+dynamic_array_continuous_memory -> fastutil: Java {
   class: arrow
 }
 
@@ -222,15 +225,17 @@ linked_set -> boost_multi_index: C++ {
 set: Set {
   class: collection_type
 }
-set -> hashset: Java {
+set -> std_unordered_set: C++ {
   class: arrow
 }
 set -> python_set: Python {
   class: arrow
 }
-set -> std_unordered_set: C++ {
+set -> hashset: Java {
   class: arrow
 }
+
+
 
 removal_type: Removal Type: {
   class: decision
@@ -238,13 +243,16 @@ removal_type: Removal Type: {
 removal_type -> queue: FIFO {
   class: arrow
 }
-removal_type -> linked_list: Neighboring indicies {
+removal_type -> linked_list: Neighboring \n indicies {
   class: arrow
 }
-removal_type -> dynamic_array_continuous_memory: Neighboring indicies, Python {
+removal_type -> dynamic_array_continuous_memory: Neighboring \n indicies, Python {
   class: arrow
 }
 removal_type -> dynamic_array_continuous_memory: Random {
+  class: arrow
+}
+removal_type -> java_dynamic_array_continuous_memory_dependency_acceptable: Random, Java {
   class: arrow
 }
 
@@ -286,9 +294,19 @@ std_vector: std::vector {
   link: https://en.cppreference.com/w/cpp/container/vector
 }
 
+python_array: array {
+  class: collection
+  link: https://docs.python.org/3/library/array.html
+}
+
+fastutil: fastutil {
+  class: collection
+  link: https://github.com/vigna/fastutil
+}
+
 python_list: "[]" {
   class: collection
-  link: https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range
+  link: "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range"
 }
 
 array_list: ArrayList {
@@ -349,14 +367,19 @@ boost_multi_index: boost::multi_index {
   link: https://www.boost.org/doc/libs/latest/libs/multi_index/doc/index.html
 }
 
-hashset: HashSet {
-  class: collection
-  link: https://docs.oracle.com/javase/26/docs/api/java/util/HashSet.html
-}
+
 
 std_unordered_set: std::unordered_set {
   class: collection
   link: https://en.cppreference.com/w/cpp/container/unordered_set
+}
+python_set: set {
+  class: collection
+  link: "https://docs.python.org/3/library/stdtypes.html#set"
+}
+hashset: HashSet {
+  class: collection
+  link: https://docs.oracle.com/javase/26/docs/api/java/util/HashSet.html
 }
 
 queue: Queue {
@@ -381,7 +404,7 @@ linked_list -> std_list: C++ {
 
 python_tuple: tuple {
   class: collection
-  link: https://docs.python.org/3/library/stdtypes.html#tuple
+  link: "https://docs.python.org/3/library/stdtypes.html#tuple"
 }
 
 is_pair: Just two objects? {
@@ -408,16 +431,22 @@ java_array: "[]" {
   class: collection
   link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/ArrayList.html
 }
+unordered_map: std::unordered_map {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/unordered_map
+}
+
+dict: dict {
+  class: collection
+  link: "https://docs.python.org/3/library/stdtypes.html#mapping-types-dict"
+}
 
 hash_map_java: HashMap {
   class: collection
   link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/HashMap.html
 }
 
-unordered_map: std::unordered_map {
-  class: collection
-  link: https://en.cppreference.com/w/cpp/container/unordered_map
-}
+
 
 linked_hash_map_java: LinkedHashMap {
   class: collection
@@ -459,10 +488,7 @@ java_record: Record {
   link: https://docs.oracle.com/en/java/javase/26/language/records.html
 }
 
-python_array: "[]" {
-  class: collection
-  link: https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range
-}
+
 
 
 
