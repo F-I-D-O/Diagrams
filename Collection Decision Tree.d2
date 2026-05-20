@@ -6,21 +6,36 @@ direction: down
 classes: {
   decision: {
     shape: diamond
-    width: 300
-    height: 300
-    label: {
+    width: 250
+    height: 250
+  }
 
-    }
+  decision_dependency: {
+    label: "Dependency Acceptable?"
   }
 
   arrow: {
     style: {
-      font-size: 25
+      font-size: 20
       italic: false
       bold: true
     }
   }
-  
+
+  collection_type: {
+    shape: rectangle
+    width: 200
+    height: 70
+  }
+
+  collection: {
+    shape: rectangle
+    width: 200
+    height: 70
+    style: {
+      border-radius: 100
+    }
+  }
 }
 
 start: "Start Here" {
@@ -33,420 +48,426 @@ start: "Start Here" {
     border-radius: 100
   }
 }
-start -> do_you_need_maping_index_value_or_ke
+start -> index_or_not
 
-arraylist: ArrayList
-arraylist.shape: rectangle
+
 
 dict: dict
 dict.shape: rectangle
 
-do_you_need_maping_index_value_or_ke: Do you need \n index->value mapping? \n (searching in collection, ...) {
+index_or_not: Do you need \n index->value mapping? \n (searching in collection, ...) {
   class: decision
 }
-
-do_you_need_maping_index_value_or_ke -> searching_by_index_key: Yes {
+index_or_not -> index_type: Yes {
+  class: arrow
+}
+index_or_not -> contains_needed: No {
   class: arrow
 }
 
-do_you_need_maping_index_value_or_ke -> do_you_need_to_check_if_the_collection_c {
-  class: arrow
-}
-
-do_you_need_the_keys_to_be_ordered: Do you need the keys to be ordered? {
+index_type: Index Type: {
   class: decision
 }
-
-do_you_need_the_keys_to_be_ordered -> use_ordered_tree_map: Yes {
+index_type -> is_size_constant: Natural numbers, \n all/most indexes are used. {
+  class: arrow
+}
+index_type -> kdtree: Distance to point {
+  class: arrow
+}
+index_type -> rtree: Distance to line or shape {
+  class: arrow
+}
+index_type -> ordered_keys_needed: General {
   class: arrow
 }
 
-do_you_need_the_keys_to_be_ordered -> do_you_need_to_iterate_over_the_collecti_2: No {
-  class: arrow
-}
-
-do_you_need_to_check_if_the_collection_c: Do you need to check if the collection contains some membr often? {
+contains_needed: Frequent need of checking \n if the collection contains \n some member? {
   class: decision
 }
-
-do_you_need_to_check_if_the_collection_c -> do_you_need_to_iterate_over_the_collecti: Yes {
+contains_needed -> is_set_iteration_needed: Yes {
+  class: arrow
+}
+contains_needed -> fast_removal_needed: No {
   class: arrow
 }
 
-do_you_need_to_check_if_the_collection_c -> do_you_need_to_remove_from_the_collectio: No {
-  class: arrow
-}
-
-do_you_need_to_iterate_over_the_collecti: Do you need to iterate over the collection, or maintain the insertion order? {
+is_size_constant: Fixed size? {
   class: decision
 }
-
-do_you_need_to_iterate_over_the_collecti -> use_linked_set: Yes {
+is_size_constant -> heterogenous_values: Yes {
+  class: arrow
+}
+is_size_constant -> dynamic_array_continuous_memory: No (C++, Python) {
+  class: arrow
+}
+is_size_constant -> java_dynamic_array_continuous_memory_dependency_acceptable: No (Java) {
   class: arrow
 }
 
-do_you_need_to_iterate_over_the_collecti -> use_set {
-  class: arrow
+kdtree: KDTree {
+  class: collection_type
 }
 
-do_you_need_to_iterate_over_the_collecti_2: Do you need to iterate over the collection, or maintain the insertion order? {
+rtree: RTree {
+  class: collection_type
+}
+
+ordered_keys_needed: Do you need the keys \n to be ordered? {
   class: decision
 }
-
-do_you_need_to_iterate_over_the_collecti_2 -> use_dicttionary_hash_map: No {
+ordered_keys_needed -> tree_map: Yes {
+  class: arrow
+}
+ordered_keys_needed -> is_map_iteration_needed: No {
   class: arrow
 }
 
-do_you_need_to_iterate_over_the_collecti_2 -> use_linked_hash_map: Yes {
-  class: arrow
-}
-
-do_you_need_to_remove_from_the_collectio: Do you need to remove from the collection often? {
+is_set_iteration_needed: Iteration or \n determinism needed? {
   class: decision
 }
-
-do_you_need_to_remove_from_the_collectio -> removal_type: Yes {
+is_set_iteration_needed -> linked_set: Yes {
+  class: arrow
+}
+is_set_iteration_needed -> set: No {
   class: arrow
 }
 
-do_you_need_to_remove_from_the_collectio -> fixed_size_known_at_compile_time: No {
-  class: arrow
-}
-
-fixed_size_known_at_compile_time: Fixed size known at compile time? {
+fast_removal_needed: Do you need to remove \n from the collection often? {
   class: decision
 }
-
-fixed_size_known_at_compile_time -> heterogenous_objects: Yes {
+fast_removal_needed -> removal_type: Yes {
+  class: arrow
+}
+fast_removal_needed -> is_size_constant: No {
   class: arrow
 }
 
-fixed_size_known_at_compile_time -> use_array_backed_list: No (C++) {
-  class: arrow
-}
-
-fixed_size_known_at_compile_time -> memory_critical_and_contains_primitive: No (Java, Python) {
-  class: arrow
-}
-
-hashmap: HashMap
-hashmap.shape: rectangle
-
-hashset: HashSet
-hashset.shape: rectangle
-
-heterogenous_objects: |md
-  Heterogenous 
-  Objects?
-| {
+heterogenous_values: Heterogenous value types? {
   class: decision
 }
-
-heterogenous_objects -> use_array: No {
+heterogenous_values -> tuple: Yes {
+  class: arrow
+}
+heterogenous_values -> java_record: Yes, Java {
+  class: arrow
+}
+heterogenous_values -> is_member_default_constructible: No {
   class: arrow
 }
 
-heterogenous_objects -> use_tuple: Yes {
+dynamic_array_continuous_memory: Dynamic array with \n continuous memory {
+  class: collection_type
+}
+dynamic_array_continuous_memory -> fastutils: Java {
+  class: arrow
+}
+dynamic_array_continuous_memory -> python_array: Python {
+  class: arrow
+}
+dynamic_array_continuous_memory -> std_vector: C++ {
   class: arrow
 }
 
-heterogenous_objects -> implicitely_default_constructible_object: No (C++) {
+dynamic_array_non_continuous_memory: Dynamic array with \n non-continuous memory {
+  class: collection_type
+}
+dynamic_array_non_continuous_memory -> python_list: Python {
+  class: arrow
+}
+dynamic_array_non_continuous_memory -> array_list: Java {
   class: arrow
 }
 
-implicitely_default_constructible_object: Implicitely default-constructible objects? {
+
+java_dynamic_array_continuous_memory_dependency_acceptable {
+  class: [decision; decision_dependency]
+}
+java_dynamic_array_continuous_memory_dependency_acceptable -> dynamic_array_continuous_memory: Yes {
+  class: arrow
+}
+java_dynamic_array_continuous_memory_dependency_acceptable -> memory_critical_and_primitive_members: No {
+  class: arrow
+}
+
+tree_map: Ordered/tree map {
+  class: collection_type
+}
+tree_map -> std_map: C++ {
+  class: arrow
+}
+tree_map -> tree_map_java: Java {
+  class: arrow
+}
+
+is_map_iteration_needed: Do you need to \n iteration or determinism? {
   class: decision
 }
-
-implicitely_default_constructible_object -> use_array: Yes {
+is_map_iteration_needed -> hash_map: No {
+  class: arrow
+}
+is_map_iteration_needed -> linked_hash_map: Yes {
   class: arrow
 }
 
-implicitely_default_constructible_object -> use_array_backed_list: No {
+linked_set: Linked set {
+  class: collection_type
+}
+linked_set -> linked_hash_set: Java {
+  class: arrow
+}
+linked_set -> boost_multi_index: C++ {
   class: arrow
 }
 
-indexes_are_natural_numbers_and_almost_a: Indexes are natural numbers and almost all/all indexes are used. {
+set: Set {
+  class: collection_type
+}
+set -> hashset: Java {
+  class: arrow
+}
+set -> python_set: Python {
+  class: arrow
+}
+set -> std_unordered_set: C++ {
+  class: arrow
+}
+
+removal_type: Removal Type: {
   class: decision
 }
-
-indexes_are_natural_numbers_and_almost_a -> do_you_need_the_keys_to_be_ordered: No {
+removal_type -> queue: FIFO {
+  class: arrow
+}
+removal_type -> linked_list: Neighboring indicies {
+  class: arrow
+}
+removal_type -> dynamic_array_continuous_memory: Neighboring indicies, Python {
+  class: arrow
+}
+removal_type -> dynamic_array_continuous_memory: Random {
   class: arrow
 }
 
-indexes_are_natural_numbers_and_almost_a -> fixed_size_known_at_compile_time: Yes {
+tuple: Tuple {
+  class: collection_type
+}
+tuple -> python_tuple: Python {
+  class: arrow
+}
+tuple -> is_pair: C++ {
   class: arrow
 }
 
-java_there_is_no_tuple_in_java_create: "Java: there is no tuple in java-> Create your own wrapperclass or use a [Record](https://docs.oracle.com/en/java/javase/16/language/records.html)"
+array: Array {
+  class: collection_type
+}
+array -> numpy_array: Python {
+  class: arrow
+}
+array -> std_array: C++ {
+  class: arrow
+}
+array -> java_array: Java {
+  class: arrow
+}
 
-just_two_objects: Just two objects? {
+is_member_default_constructible: Default-constructible members? {
   class: decision
 }
-
-just_two_objects -> std_tuple: No {
+is_member_default_constructible -> array: Yes {
+  class: arrow
+}
+is_member_default_constructible -> dynamic_array_continuous_memory: No {
   class: arrow
 }
 
-just_two_objects -> std_pair: Yes {
-  class: arrow
+std_vector: std::vector {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/vector
 }
 
-linkedhashmap: LinkedHashMap
-linkedhashmap.shape: rectangle
-linkedhashmap.link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/LinkedHashMap.html
+python_list: "[]" {
+  class: collection
+  link: https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range
+}
 
-linkedhashset: LinkedHashSet
-linkedhashset.shape: rectangle
-linkedhashset.link: https://docs.oracle.com/javase/10/docs/api/java/util/LinkedHashSet.html
+array_list: ArrayList {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/ArrayList.html
+}
 
-linkedlist: LinkedList
-linkedlist.shape: rectangle
-
-map: map
-map.shape: rectangle
-
-memory_critical_and_contains_primitive: |md
-  Memory critical 
-  AND
-  contains primitive types (int, float)?
-| {
+memory_critical_and_primitive_members: Memory critical \n AND \n primitive members \n (int, float)? {
   class: decision
 }
-
-memory_critical_and_contains_primitive -> use_array: Yes {
+memory_critical_and_primitive_members -> array: Yes {
+  class: arrow
+}
+memory_critical_and_primitive_members -> dynamic_array_non_continuous_memory: No {
   class: arrow
 }
 
-memory_critical_and_contains_primitive -> use_array_backed_list: No {
+std_map: std::map {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/map
+}
+
+tree_map_java: TreeMap {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/TreeMap.html
+}
+
+hash_map: Dictionary/hash map {
+  class: collection_type
+}
+hash_map -> hash_map_java: Java {
+  class: arrow
+}
+hash_map -> dict: Python {
+  class: arrow
+}
+hash_map -> unordered_map: C++ {
   class: arrow
 }
 
-no: No
+linked_hash_map: Linked hash map {
+  class: collection_type
+}
+linked_hash_map -> linked_hash_map_java: Java {
+  class: arrow
+}
+linked_hash_map -> boost_multi_index: C++ {
+  class: arrow
+}
 
-no_2: No
+linked_hash_set: LinkedHashSet {
+  class: collection
+  link: https://docs.oracle.com/javase/26/docs/api/java/util/LinkedHashSet.html
+}
 
-node: "[]"
-node.shape: rectangle
+boost_multi_index: boost::multi_index {
+  class: collection
+  link: https://www.boost.org/doc/libs/latest/libs/multi_index/doc/index.html
+}
 
-node_2: "[]"
-node_2.shape: rectangle
+hashset: HashSet {
+  class: collection
+  link: https://docs.oracle.com/javase/26/docs/api/java/util/HashSet.html
+}
 
-node_3: ()
-node_3.shape: rectangle
+std_unordered_set: std::unordered_set {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/unordered_set
+}
 
-nothing_in_stl_use_boost_multi_index: "Nothing in STL, [use boost::multi_index](https://www.boost.org/doc/libs/1_78_0/libs/multi_index/doc/index.html)"
+queue: Queue {
+  class: collection_type
+}
+queue -> std_queue: C++ {
+  class: arrow
+}
+queue -> python_queue: Python {
+  class: arrow
+}
 
-nothing_in_stl_use_boost_multi_index_2: "Nothing in STL, [use boost::multi_index](https://www.boost.org/doc/libs/1_78_0/libs/multi_index/doc/index.html)"
+linked_list: Linked list {
+  class: collection_type
+}
+linked_list -> linked_list_java: Java {
+  class: arrow
+}
+linked_list -> std_list: C++ {
+  class: arrow
+}
 
-numpy_array: numpy.array
-numpy_array.shape: rectangle
+python_tuple: tuple {
+  class: collection
+  link: https://docs.python.org/3/library/stdtypes.html#tuple
+}
 
-queue_queue: queue.Queue
-queue_queue.shape: rectangle
-queue_queue.link: https://docs.python.org/3/library/queue.html
-
-removal_type: Removal Type {
+is_pair: Just two objects? {
   class: decision
 }
-
-removal_type -> use_queue: FIFO {
+is_pair -> std_pair: Yes {
+  class: arrow
+}
+is_pair -> std_tuple: No {
   class: arrow
 }
 
-removal_type -> use_array_backed_list: Random {
-  class: arrow
+numpy_array: numpy.array {
+  class: collection
+  link: https://numpy.org/doc/stable/reference/generated/numpy.array.html
 }
 
-removal_type -> use_linked_list: removing from the nearby indicies {
-  class: arrow
+std_array: std::array {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/array
 }
 
-search_by: search by: {
-  class: decision
+java_array: "[]" {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/ArrayList.html
 }
 
-search_by -> use_rtree: Distance to line, shape {
-  class: arrow
+hash_map_java: HashMap {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/HashMap.html
 }
 
-search_by -> use_kdtree: Distance to point {
-  class: arrow
+unordered_map: std::unordered_map {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/unordered_map
 }
 
-searching_by_index_key: Searching by index/key {
-  class: decision
+linked_hash_map_java: LinkedHashMap {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/LinkedHashMap.html
 }
 
-searching_by_index_key -> indexes_are_natural_numbers_and_almost_a: Yes {
-  class: arrow
+std_queue: std::queue {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/queue
 }
 
-searching_by_index_key -> search_by: No {
-  class: arrow
+python_queue: queue.Queue {
+  class: collection
+  link: https://docs.python.org/3/library/queue.html
 }
 
-set: set
-set.shape: rectangle
-
-std_array: std::array
-std_array.shape: rectangle
-std_array.link: https://en.cppreference.com/w/cpp/container/array
-
-std_list: std::list
-std_list.shape: rectangle
-
-std_pair: std::pair
-std_pair.shape: rectangle
-
-std_queue: std::queue
-std_queue.shape: rectangle
-std_queue.link: https://en.cppreference.com/w/cpp/container/queue
-
-std_tuple: std::tuple
-std_tuple.shape: rectangle
-
-std_unordered_set: std::unordered_set
-std_unordered_set.shape: rectangle
-
-std_vector: std::vector
-std_vector.shape: rectangle
-std_vector.link: https://en.cppreference.com/w/cpp/container/vector
-
-treemap: TreeMap
-treemap.shape: rectangle
-
-unordered_map: unordered_map
-unordered_map.shape: rectangle
-
-use_array: Use array
-
-use_array -> numpy_array: Python {
-  class: arrow
+linked_list_java: LinkedList {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/LinkedList.html
 }
 
-use_array -> std_array: C++ {
-  class: arrow
+std_list: std::list {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/list
 }
 
-use_array -> node_2: Java {
-  class: arrow
+std_pair: std::pair {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/pair
 }
 
-use_array_backed_list: Use array backed list
-
-use_array_backed_list -> arraylist: Java {
-  class: arrow
+std_tuple: std::tuple {
+  class: collection
+  link: https://en.cppreference.com/w/cpp/container/tuple
 }
 
-use_array_backed_list -> node: Python {
-  class: arrow
+java_record: Record {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/26/language/records.html
 }
 
-use_array_backed_list -> std_vector: C++ {
-  class: arrow
+python_array: "[]" {
+  class: collection
+  link: https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range
 }
 
-use_dicttionary_hash_map: Use dicttionary/hash map
 
-use_dicttionary_hash_map -> hashmap: Java {
-  class: arrow
-}
 
-use_dicttionary_hash_map -> dict: Python {
-  class: arrow
-}
 
-use_dicttionary_hash_map -> unordered_map: C++ {
-  class: arrow
-}
 
-use_kdtree: Use KDTree
 
-use_linked_hash_map: Use linked hash map
 
-use_linked_hash_map -> linkedhashmap: Java {
-  class: arrow
-}
 
-use_linked_hash_map -> nothing_in_stl_use_boost_multi_index_2: C++ {
-  class: arrow
-}
-
-use_linked_list: Use linked list
-
-use_linked_list -> linkedlist: Java {
-  class: arrow
-}
-
-use_linked_list -> use_array_backed_list: |md
-  Python
-  There is no implementation
-   included in python
-| {
-  class: arrow
-}
-
-use_linked_list -> std_list: C++ {
-  class: arrow
-}
-
-use_linked_set: Use linked set
-
-use_linked_set -> linkedhashset: Java {
-  class: arrow
-}
-
-use_linked_set -> nothing_in_stl_use_boost_multi_index: C++ {
-  class: arrow
-}
-
-use_ordered_tree_map: Use ordered/tree map
-
-use_ordered_tree_map -> map: C++ {
-  class: arrow
-}
-
-use_ordered_tree_map -> treemap: Java {
-  class: arrow
-}
-
-use_queue: Use Queue
-
-use_queue -> std_queue: C++ {
-  class: arrow
-}
-
-use_queue -> queue_queue: Python {
-  class: arrow
-}
-
-use_rtree: Use Rtree
-
-use_set: Use set
-
-use_set -> hashset: Java {
-  class: arrow
-}
-
-use_set -> set: Python {
-  class: arrow
-}
-
-use_set -> std_unordered_set: C++ {
-  class: arrow
-}
-
-use_tuple: Use tuple
-
-use_tuple -> node_3: Python {
-  class: arrow
-}
-
-use_tuple -> just_two_objects: C++ {
-  class: arrow
-}
-
-use_tuple -> java_there_is_no_tuple_in_java_create: Java {
-  class: arrow
-}
