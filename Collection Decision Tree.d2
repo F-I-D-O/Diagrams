@@ -36,6 +36,30 @@ classes: {
       border-radius: 100
     }
   }
+
+  sets: {
+    style: {
+      fill: "#E8F4FC"
+    }
+  }
+
+  maps: {
+    style: {
+      fill: "#F3E8FC"
+    }
+  }
+
+  arrays: {
+    style: {
+      fill: "#E8FCE8"
+    }
+  }
+
+  dynamic_arrays: {
+    style: {
+      fill: "#E8F8E8"
+    }
+  }
 }
 
 start: "Start Here" {
@@ -49,11 +73,6 @@ start: "Start Here" {
   }
 }
 start -> index_or_not
-
-
-
-dict: dict
-dict.shape: rectangle
 
 index_or_not: Do you need \n index->value mapping? \n (searching in collection, ...) {
   class: decision
@@ -77,14 +96,14 @@ index_type -> kdtree: Distance to point {
 index_type -> rtree: Distance to \n line or shape {
   class: arrow
 }
-index_type -> maps.ordered_keys_needed: General {
+index_type -> ordered_keys_needed: General {
   class: arrow
 }
 
 contains_needed: Frequent need of checking \n if the collection contains \n some member? {
   class: decision
 }
-contains_needed -> sets.is_set_iteration_needed: Yes {
+contains_needed -> is_set_iteration_needed: Yes {
   class: arrow
 }
 contains_needed -> fast_removal_needed: No {
@@ -115,10 +134,10 @@ is_size_constant: Fixed size? {
 is_size_constant -> heterogenous_values: Yes {
   class: arrow
 }
-is_size_constant -> arrays.dynamic_arrays.dynamic_array_continuous_memory: No (C++, Python) {
+is_size_constant -> dynamic_array_continuous_memory: No (C++, Python) {
   class: arrow
 }
-is_size_constant -> arrays.java_dynamic_array_continuous_memory_dependency_acceptable: No (Java) {
+is_size_constant -> java_dynamic_array_continuous_memory_dependency_acceptable: No (Java) {
   class: arrow
 }
 
@@ -131,10 +150,10 @@ heterogenous_values -> tuple: Yes {
 heterogenous_values -> java_record: Yes, Java {
   class: arrow
 }
-heterogenous_values -> arrays.array: No {
+heterogenous_values -> array: No {
   class: arrow
 }
-heterogenous_values -> arrays.is_member_default_constructible: No, C++ {
+heterogenous_values -> is_member_default_constructible: No, C++ {
   class: arrow
 }
 
@@ -147,13 +166,13 @@ removal_type -> queue: FIFO {
 removal_type -> linked_list: Neighboring \n indicies {
   class: arrow
 }
-removal_type -> arrays.dynamic_arrays.dynamic_array_continuous_memory: Neighboring \n indicies, Python {
+removal_type -> dynamic_array_continuous_memory: Neighboring \n indicies, Python {
   class: arrow
 }
-removal_type -> arrays.dynamic_arrays.dynamic_array_continuous_memory: Random {
+removal_type -> dynamic_array_continuous_memory: Random {
   class: arrow
 }
-removal_type -> arrays.java_dynamic_array_continuous_memory_dependency_acceptable: Random, Java {
+removal_type -> java_dynamic_array_continuous_memory_dependency_acceptable: Random, Java {
   class: arrow
 }
 
@@ -242,252 +261,244 @@ java_record: Record {
   link: https://docs.oracle.com/en/java/javase/26/language/records.html
 }
 
-sets: Sets {
-  is_set_iteration_needed: Iteration or \n determinism needed? {
-    class: decision
-  }
-  is_set_iteration_needed -> linked_set: Yes {
-    class: arrow
-  }
-  is_set_iteration_needed -> set: No {
-    class: arrow
-  }
-
-  linked_set: Linked set {
-    class: collection_type
-  }
-  linked_set -> linked_hash_set: Java {
-    class: arrow
-  }
-  linked_set -> boost_multi_index: C++ {
-    class: arrow
-  }
-
-  set: Set {
-    class: collection_type
-  }
-  set -> std_unordered_set: C++ {
-    class: arrow
-  }
-  set -> python_set: Python {
-    class: arrow
-  }
-  set -> hashset: Java {
-    class: arrow
-  }
-
-  linked_hash_set: LinkedHashSet {
-    class: collection
-    link: https://docs.oracle.com/javase/26/docs/api/java/util/LinkedHashSet.html
-  }
-
-  std_unordered_set: std::unordered_set {
-    class: collection
-    link: https://en.cppreference.com/w/cpp/container/unordered_set
-  }
-  python_set: set {
-    class: collection
-    link: "https://docs.python.org/3/library/stdtypes.html#set"
-  }
-  hashset: HashSet {
-    class: collection
-    link: https://docs.oracle.com/javase/26/docs/api/java/util/HashSet.html
-  }
+is_set_iteration_needed: Iteration or \n determinism needed? {
+  class: [decision; sets]
+}
+is_set_iteration_needed -> linked_set: Yes {
+  class: arrow
+}
+is_set_iteration_needed -> set: No {
+  class: arrow
 }
 
-arrays: Arrays {
-  array: Array {
-    class: collection_type
-  }
-  array -> numpy_array: Python {
-    class: arrow
-  }
-  array -> std_array: C++ {
-    class: arrow
-  }
-  array -> java_array: Java {
-    class: arrow
-  }
-
-  is_member_default_constructible: Default-constructible members? {
-    class: decision
-  }
-  is_member_default_constructible -> array: Yes {
-    class: arrow
-  }
-  is_member_default_constructible -> dynamic_arrays.dynamic_array_continuous_memory: No {
-    class: arrow
-  }
-
-  numpy_array: numpy.array {
-    class: collection
-    link: https://numpy.org/doc/stable/reference/generated/numpy.array.html
-  }
-
-  std_array: std::array {
-    class: collection
-    link: https://en.cppreference.com/w/cpp/container/array
-  }
-
-  java_array: "[]" {
-    class: collection
-    link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/ArrayList.html
-  }
-
-  java_dynamic_array_continuous_memory_dependency_acceptable {
-    class: [decision; decision_dependency]
-  }
-  java_dynamic_array_continuous_memory_dependency_acceptable -> dynamic_arrays.dynamic_array_continuous_memory: Yes {
-    class: arrow
-  }
-  java_dynamic_array_continuous_memory_dependency_acceptable -> memory_critical_and_primitive_members: No {
-    class: arrow
-  }
-
-  memory_critical_and_primitive_members: Memory critical \n AND \n primitive members \n (int, float)? {
-    class: decision
-  }
-  memory_critical_and_primitive_members -> array: Yes {
-    class: arrow
-  }
-  memory_critical_and_primitive_members -> dynamic_arrays.dynamic_array_non_continuous_memory: No {
-    class: arrow
-  }
-
-  dynamic_arrays: Dynamic arrays {
-    dynamic_array_continuous_memory: Dynamic array with \n continuous memory {
-      class: collection_type
-    }
-    dynamic_array_continuous_memory -> std_vector: C++ {
-      class: arrow
-    }
-    dynamic_array_continuous_memory -> python_array: Python {
-      class: arrow
-    }
-    dynamic_array_continuous_memory -> fastutil: Java {
-      class: arrow
-    }
-
-    dynamic_array_non_continuous_memory: Dynamic array with \n non-continuous memory {
-      class: collection_type
-    }
-    dynamic_array_non_continuous_memory -> python_list: Python {
-      class: arrow
-    }
-    dynamic_array_non_continuous_memory -> array_list: Java {
-      class: arrow
-    }
-
-    std_vector: std::vector {
-      class: collection
-      link: https://en.cppreference.com/w/cpp/container/vector
-    }
-
-    python_array: array {
-      class: collection
-      link: https://docs.python.org/3/library/array.html
-    }
-
-    fastutil: fastutil {
-      class: collection
-      link: https://github.com/vigna/fastutil
-    }
-
-    python_list: "[]" {
-      class: collection
-      link: "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range"
-    }
-
-    array_list: ArrayList {
-      class: collection
-      link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/ArrayList.html
-    }
-  }
+linked_set: Linked set {
+  class: [collection_type; sets]
+}
+linked_set -> linked_hash_set: Java {
+  class: arrow
+}
+linked_set -> boost_multi_index: C++ {
+  class: arrow
 }
 
-maps: Maps {
-  ordered_keys_needed: Do you need the keys \n to be ordered? {
-    class: decision
-  }
-  ordered_keys_needed -> tree_map: Yes {
-    class: arrow
-  }
-  ordered_keys_needed -> is_map_iteration_needed: No {
-    class: arrow
-  }
+set: Set {
+  class: [collection_type; sets]
+}
+set -> std_unordered_set: C++ {
+  class: arrow
+}
+set -> python_set: Python {
+  class: arrow
+}
+set -> hashset: Java {
+  class: arrow
+}
 
-  is_map_iteration_needed: Do you need to \n iteration or determinism? {
-    class: decision
-  }
-  is_map_iteration_needed -> hash_map: No {
-    class: arrow
-  }
-  is_map_iteration_needed -> linked_hash_map: Yes {
-    class: arrow
-  }
+linked_hash_set: LinkedHashSet {
+  class: [collection; sets]
+  link: https://docs.oracle.com/javase/26/docs/api/java/util/LinkedHashSet.html
+}
 
-  tree_map: Ordered/tree map {
-    class: collection_type
-  }
-  tree_map -> std_map: C++ {
-    class: arrow
-  }
-  tree_map -> tree_map_java: Java {
-    class: arrow
-  }
+std_unordered_set: std::unordered_set {
+  class: [collection; sets]
+  link: https://en.cppreference.com/w/cpp/container/unordered_set
+}
+python_set: set {
+  class: [collection; sets]
+  link: "https://docs.python.org/3/library/stdtypes.html#set"
+}
+hashset: HashSet {
+  class: [collection; sets]
+  link: https://docs.oracle.com/javase/26/docs/api/java/util/HashSet.html
+}
 
-  hash_map: Dictionary/hash map {
-    class: collection_type
-  }
-  hash_map -> hash_map_java: Java {
-    class: arrow
-  }
-  hash_map -> dict: Python {
-    class: arrow
-  }
-  hash_map -> unordered_map: C++ {
-    class: arrow
-  }
+array: Array {
+  class: [collection_type; arrays]
+}
+array -> numpy_array: Python {
+  class: arrow
+}
+array -> std_array: C++ {
+  class: arrow
+}
+array -> java_array: Java {
+  class: arrow
+}
 
-  linked_hash_map: Linked hash map {
-    class: collection_type
-  }
-  linked_hash_map -> linked_hash_map_java: Java {
-    class: arrow
-  }
-  linked_hash_map -> boost_multi_index: C++ {
-    class: arrow
-  }
+is_member_default_constructible: Default-constructible members? {
+  class: [decision; arrays]
+}
+is_member_default_constructible -> array: Yes {
+  class: arrow
+}
+is_member_default_constructible -> dynamic_array_continuous_memory: No {
+  class: arrow
+}
 
-  std_map: std::map {
-    class: collection
-    link: https://en.cppreference.com/w/cpp/container/map
-  }
+numpy_array: numpy.array {
+  class: [collection; arrays]
+  link: https://numpy.org/doc/stable/reference/generated/numpy.array.html
+}
 
-  tree_map_java: TreeMap {
-    class: collection
-    link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/TreeMap.html
-  }
+std_array: std::array {
+  class: [collection; arrays]
+  link: https://en.cppreference.com/w/cpp/container/array
+}
 
-  unordered_map: std::unordered_map {
-    class: collection
-    link: https://en.cppreference.com/w/cpp/container/unordered_map
-  }
+java_array: "[]" {
+  class: [collection; arrays]
+  link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/ArrayList.html
+}
 
-  dict: dict {
-    class: collection
-    link: "https://docs.python.org/3/library/stdtypes.html#mapping-types-dict"
-  }
+java_dynamic_array_continuous_memory_dependency_acceptable {
+  class: [decision; decision_dependency; arrays]
+}
+java_dynamic_array_continuous_memory_dependency_acceptable -> dynamic_array_continuous_memory: Yes {
+  class: arrow
+}
+java_dynamic_array_continuous_memory_dependency_acceptable -> memory_critical_and_primitive_members: No {
+  class: arrow
+}
 
-  hash_map_java: HashMap {
-    class: collection
-    link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/HashMap.html
-  }
+memory_critical_and_primitive_members: Memory critical \n AND \n primitive members \n (int, float)? {
+  class: [decision; arrays]
+}
+memory_critical_and_primitive_members -> array: Yes {
+  class: arrow
+}
+memory_critical_and_primitive_members -> dynamic_array_non_continuous_memory: No {
+  class: arrow
+}
 
-  linked_hash_map_java: LinkedHashMap {
-    class: collection
-    link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/LinkedHashMap.html
-  }
+dynamic_array_continuous_memory: Dynamic array with \n continuous memory {
+  class: [collection_type; dynamic_arrays]
+}
+dynamic_array_continuous_memory -> std_vector: C++ {
+  class: arrow
+}
+dynamic_array_continuous_memory -> python_array: Python {
+  class: arrow
+}
+dynamic_array_continuous_memory -> fastutil: Java {
+  class: arrow
+}
+
+dynamic_array_non_continuous_memory: Dynamic array with \n non-continuous memory {
+  class: [collection_type; dynamic_arrays]
+}
+dynamic_array_non_continuous_memory -> python_list: Python {
+  class: arrow
+}
+dynamic_array_non_continuous_memory -> array_list: Java {
+  class: arrow
+}
+
+std_vector: std::vector {
+  class: [collection; dynamic_arrays]
+  link: https://en.cppreference.com/w/cpp/container/vector
+}
+
+python_array: array {
+  class: [collection; dynamic_arrays]
+  link: https://docs.python.org/3/library/array.html
+}
+
+fastutil: fastutil {
+  class: [collection; dynamic_arrays]
+  link: https://github.com/vigna/fastutil
+}
+
+python_list: "[]" {
+  class: [collection; dynamic_arrays]
+  link: "https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range"
+}
+
+array_list: ArrayList {
+  class: [collection; dynamic_arrays]
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/ArrayList.html
+}
+
+ordered_keys_needed: Do you need the keys \n to be ordered? {
+  class: [decision; maps]
+}
+ordered_keys_needed -> tree_map: Yes {
+  class: arrow
+}
+ordered_keys_needed -> is_map_iteration_needed: No {
+  class: arrow
+}
+
+is_map_iteration_needed: Do you need to \n iteration or determinism? {
+  class: [decision; maps]
+}
+is_map_iteration_needed -> hash_map: No {
+  class: arrow
+}
+is_map_iteration_needed -> linked_hash_map: Yes {
+  class: arrow
+}
+
+tree_map: Ordered/tree map {
+  class: [collection_type; maps]
+}
+tree_map -> std_map: C++ {
+  class: arrow
+}
+tree_map -> tree_map_java: Java {
+  class: arrow
+}
+
+hash_map: Dictionary/hash map {
+  class: [collection_type; maps]
+}
+hash_map -> hash_map_java: Java {
+  class: arrow
+}
+hash_map -> dict: Python {
+  class: arrow
+}
+hash_map -> unordered_map: C++ {
+  class: arrow
+}
+
+linked_hash_map: Linked hash map {
+  class: [collection_type; maps]
+}
+linked_hash_map -> linked_hash_map_java: Java {
+  class: arrow
+}
+linked_hash_map -> boost_multi_index: C++ {
+  class: arrow
+}
+
+std_map: std::map {
+  class: [collection; maps]
+  link: https://en.cppreference.com/w/cpp/container/map
+}
+
+tree_map_java: TreeMap {
+  class: [collection; maps]
+  link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/TreeMap.html
+}
+
+unordered_map: std::unordered_map {
+  class: [collection; maps]
+  link: https://en.cppreference.com/w/cpp/container/unordered_map
+}
+
+dict: dict {
+  class: [collection; maps]
+  link: "https://docs.python.org/3/library/stdtypes.html#mapping-types-dict"
+}
+
+hash_map_java: HashMap {
+  class: [collection; maps]
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/HashMap.html
+}
+
+linked_hash_map_java: LinkedHashMap {
+  class: [collection; maps]
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/LinkedHashMap.html
 }
 
 
