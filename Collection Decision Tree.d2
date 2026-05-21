@@ -39,40 +39,55 @@ classes: {
 
   sets: {
     style: {
-      fill: "#E8F4FC"
+      fill: "#90f597"
     }
   }
 
   maps: {
     style: {
-      fill: "#F3E8FC"
+      fill: "#fa8989"
     }
   }
 
   arrays: {
     style: {
-      fill: "#E8FCE8"
+      fill: "#6eb0e6"
     }
   }
 
   dynamic_arrays: {
     style: {
-      fill: "#E8F8E8"
+      fill: "#a78dfc"
     }
   }
 }
 
-start: "Start Here" {
-  notice: |md
-    - Author: David Fiedler
-    - License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
-    - Repository and Issues: [GitHub](https://github.com/F-I-D-O/Diagrams)
-  |
+start_wrapper: "" {
   style: {
-    border-radius: 100
+    fill: "#FFFFFF"
+    stroke: "#FFFFFF"
+  }
+
+  start: "Start Here" {
+    notice: |md
+      - Author: David Fiedler
+      - License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+      - Repository and Issues: [GitHub](https://github.com/F-I-D-O/Diagrams)
+      - Legend:
+
+      <div style="margin-top:0.5em;margin-left:2em;padding:0px 10px;font-size:0.95em;">
+        <div style="display:flex;align-items:center;gap:8px;margin:2px 0;"><span style="display:inline-block;width:14px;height:14px;background-color:#6eb0e6;border:1px solid #333;"></span><span>Arrays</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin:2px 0;"><span style="display:inline-block;width:14px;height:14px;background-color:#a78dfc;border:1px solid #333;"></span><span>Dynamic Arrays</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin:2px 0;"><span style="display:inline-block;width:14px;height:14px;background-color:#90f597;border:1px solid #333;"></span><span>Sets</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin:2px 0;"><span style="display:inline-block;width:14px;height:14px;background-color:#fa8989;border:1px solid #333;"></span><span>Maps</span></div>
+      </div>
+    |
+    style: {
+      border-radius: 100
+    }
   }
 }
-start -> index_or_not
+start_wrapper.start -> index_or_not
 
 index_or_not: Do you need \n index->value mapping? \n (searching in collection, ...) {
   class: decision
@@ -112,10 +127,12 @@ contains_needed -> fast_removal_needed: No {
 
 kdtree: KDTree {
   class: collection_type
+  link: https://en.wikipedia.org/wiki/K-d_tree
 }
 
 rtree: RTree {
   class: collection_type
+  link: https://en.wikipedia.org/wiki/R-tree
 }
 
 fast_removal_needed: Do you need to remove \n from the collection often? {
@@ -193,6 +210,7 @@ boost_multi_index: boost::multi_index {
 
 queue: Queue {
   class: collection_type
+  link: https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
 }
 queue -> std_queue: C++ {
   class: arrow
@@ -203,6 +221,7 @@ queue -> python_queue: Python {
 
 linked_list: Linked list {
   class: collection_type
+  link: https://en.wikipedia.org/wiki/Linked_list
 }
 linked_list -> linked_list_java: Java {
   class: arrow
@@ -283,6 +302,7 @@ linked_set -> boost_multi_index: C++ {
 
 set: Set {
   class: [collection_type; sets]
+  link: https://en.wikipedia.org/wiki/Set_(abstract_data_type)
 }
 set -> std_unordered_set: C++ {
   class: arrow
@@ -314,6 +334,7 @@ hashset: HashSet {
 
 array: Array {
   class: [collection_type; arrays]
+  link: https://en.wikipedia.org/wiki/Array_(data_structure)
 }
 array -> numpy_array: Python {
   class: arrow
@@ -372,6 +393,7 @@ memory_critical_and_primitive_members -> dynamic_array_non_continuous_memory: No
 
 dynamic_array_continuous_memory: Dynamic array with \n continuous memory {
   class: [collection_type; dynamic_arrays]
+  link: https://en.wikipedia.org/wiki/Dynamic_array
 }
 dynamic_array_continuous_memory -> std_vector: C++ {
   class: arrow
@@ -385,6 +407,7 @@ dynamic_array_continuous_memory -> fastutil: Java {
 
 dynamic_array_non_continuous_memory: Dynamic array with \n non-continuous memory {
   class: [collection_type; dynamic_arrays]
+  link: https://en.wikipedia.org/wiki/Dynamic_array
 }
 dynamic_array_non_continuous_memory -> python_list: Python {
   class: arrow
@@ -438,8 +461,9 @@ is_map_iteration_needed -> linked_hash_map: Yes {
   class: arrow
 }
 
-tree_map: Ordered/tree map {
+tree_map: Tree map {
   class: [collection_type; maps]
+  link: https://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 }
 tree_map -> std_map: C++ {
   class: arrow
@@ -448,8 +472,9 @@ tree_map -> tree_map_java: Java {
   class: arrow
 }
 
-hash_map: Dictionary/hash map {
+hash_map: Hash map {
   class: [collection_type; maps]
+  link: https://en.wikipedia.org/wiki/Hash_table
 }
 hash_map -> hash_map_java: Java {
   class: arrow
