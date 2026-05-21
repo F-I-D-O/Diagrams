@@ -151,10 +151,10 @@ is_size_constant: Fixed size? {
 is_size_constant -> heterogenous_values: Yes {
   class: arrow
 }
-is_size_constant -> dynamic_array_continuous_memory: No (C++, Python) {
+is_size_constant -> dynamic_array_contiguous_memory: No (C++, Python) {
   class: arrow
 }
-is_size_constant -> java_dynamic_array_continuous_memory_dependency_acceptable: No (Java) {
+is_size_constant -> java_dynamic_array_contiguous_memory_dependency_acceptable: No (Java) {
   class: arrow
 }
 
@@ -183,13 +183,13 @@ removal_type -> queue: FIFO {
 removal_type -> linked_list: Neighboring \n indicies {
   class: arrow
 }
-removal_type -> dynamic_array_continuous_memory: Neighboring \n indicies, Python {
+removal_type -> dynamic_array_contiguous_memory: Neighboring \n indicies, Python {
   class: arrow
 }
-removal_type -> dynamic_array_continuous_memory: Random {
+removal_type -> dynamic_array_contiguous_memory: Random {
   class: arrow
 }
-removal_type -> java_dynamic_array_continuous_memory_dependency_acceptable: Random, Java {
+removal_type -> java_dynamic_array_contiguous_memory_dependency_acceptable: Random, Java {
   class: arrow
 }
 
@@ -216,6 +216,9 @@ queue -> std_queue: C++ {
   class: arrow
 }
 queue -> python_queue: Python {
+  class: arrow
+}
+queue -> array_deque: Java {
   class: arrow
 }
 
@@ -249,10 +252,13 @@ std_queue: std::queue {
   class: collection
   link: https://en.cppreference.com/w/cpp/container/queue
 }
-
 python_queue: queue.Queue {
   class: collection
   link: https://docs.python.org/3/library/queue.html
+}
+array_deque: ArrayDeque {
+  class: collection
+  link: https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/ArrayDeque.html
 }
 
 linked_list_java: LinkedList {
@@ -352,7 +358,7 @@ is_member_default_constructible: Default-constructible members? {
 is_member_default_constructible -> array: Yes {
   class: arrow
 }
-is_member_default_constructible -> dynamic_array_continuous_memory: No {
+is_member_default_constructible -> dynamic_array_contiguous_memory: No {
   class: arrow
 }
 
@@ -371,13 +377,13 @@ java_array: "[]" {
   link: https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/ArrayList.html
 }
 
-java_dynamic_array_continuous_memory_dependency_acceptable {
+java_dynamic_array_contiguous_memory_dependency_acceptable {
   class: [decision; decision_dependency; arrays]
 }
-java_dynamic_array_continuous_memory_dependency_acceptable -> dynamic_array_continuous_memory: Yes {
+java_dynamic_array_contiguous_memory_dependency_acceptable -> dynamic_array_contiguous_memory: Yes {
   class: arrow
 }
-java_dynamic_array_continuous_memory_dependency_acceptable -> memory_critical_and_primitive_members: No {
+java_dynamic_array_contiguous_memory_dependency_acceptable -> memory_critical_and_primitive_members: No {
   class: arrow
 }
 
@@ -387,32 +393,32 @@ memory_critical_and_primitive_members: Memory critical \n AND \n primitive membe
 memory_critical_and_primitive_members -> array: Yes {
   class: arrow
 }
-memory_critical_and_primitive_members -> dynamic_array_non_continuous_memory: No {
+memory_critical_and_primitive_members -> dynamic_array_non_contiguous_memory: No {
   class: arrow
 }
 
-dynamic_array_continuous_memory: Dynamic array with \n continuous memory {
+dynamic_array_contiguous_memory: Dynamic array with \n contiguous memory {
   class: [collection_type; dynamic_arrays]
   link: https://en.wikipedia.org/wiki/Dynamic_array
 }
-dynamic_array_continuous_memory -> std_vector: C++ {
+dynamic_array_contiguous_memory -> std_vector: C++ {
   class: arrow
 }
-dynamic_array_continuous_memory -> python_array: Python {
+dynamic_array_contiguous_memory -> python_array: Python {
   class: arrow
 }
-dynamic_array_continuous_memory -> fastutil: Java {
+dynamic_array_contiguous_memory -> fastutil: Java {
   class: arrow
 }
 
-dynamic_array_non_continuous_memory: Dynamic array with \n non-continuous memory {
+dynamic_array_non_contiguous_memory: Dynamic array with \n non-contiguous memory {
   class: [collection_type; dynamic_arrays]
   link: https://en.wikipedia.org/wiki/Dynamic_array
 }
-dynamic_array_non_continuous_memory -> python_list: Python {
+dynamic_array_non_contiguous_memory -> python_list: Python {
   class: arrow
 }
-dynamic_array_non_continuous_memory -> array_list: Java {
+dynamic_array_non_contiguous_memory -> array_list: Java {
   class: arrow
 }
 
