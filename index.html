@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Collection Decision Tree</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #eef1f8;
+      color: #0a0f25;
+    }
+    #toolbar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.35rem;
+      padding: 0.5rem;
+      background: #fff;
+      border-left: 1px solid #cfd2dd;
+      box-shadow: -1px 0 3px rgba(10, 15, 37, 0.08);
+    }
+    #toolbar button {
+      font: inherit;
+      font-size: 0.875rem;
+      line-height: 1;
+      min-width: 2.25rem;
+      min-height: 2.25rem;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid #cfd2dd;
+      border-radius: 6px;
+      background: #fff;
+      color: #0a0f25;
+      cursor: pointer;
+    }
+    #toolbar button:hover {
+      background: #eef1f8;
+    }
+    #toolbar button:active {
+      background: #dee1eb;
+    }
+    #toolbar .spacer {
+      flex: 1;
+      min-height: 0;
+    }
+    #btn-help[aria-expanded="true"] {
+      background: #eef1f8;
+      border-color: #9aa0b5;
+    }
+    #help-panel {
+      display: none;
+      position: fixed;
+      right: calc(var(--toolbar-width, 3rem) + 0.5rem);
+      bottom: 0.75rem;
+      z-index: 4;
+      max-width: min(18rem, calc(100vw - var(--toolbar-width, 3rem) - 1.5rem));
+      padding: 0.65rem 0.85rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #676c7e;
+      background: #fff;
+      border: 1px solid #cfd2dd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(10, 15, 37, 0.12);
+    }
+    #help-panel.visible {
+      display: block;
+    }
+    #diagram-wrap {
+      position: absolute;
+      inset: 0;
+      right: var(--toolbar-width, 3rem);
+      background: #fff;
+      cursor: grab;
+    }
+    #diagram-wrap:active { cursor: grabbing; }
+    #diagram-wrap svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+    }
+    #error {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      background: #fff;
+    }
+    #error.visible { display: flex; flex-direction: column; gap: 1rem; }
+    #error code {
+      background: #eef1f8;
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    #loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #676c7e;
+    }
+    #loading.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <aside id="toolbar" aria-label="Diagram controls">
+    <button type="button" id="btn-fit" title="Fit diagram in view">Fit</button>
+    <button type="button" id="btn-center" title="Center diagram">Center</button>
+    <button type="button" id="btn-zoom-in" title="Zoom in">+</button>
+    <button type="button" id="btn-zoom-out" title="Zoom out">−</button>
+    <button type="button" id="btn-reset" title="Reset pan and zoom">Reset</button>
+    <span class="spacer" aria-hidden="true"></span>
+    <button type="button" id="btn-help" title="Show help" aria-expanded="false" aria-controls="help-panel">?</button>
+  </aside>
+
+  <div id="help-panel" role="region" aria-label="Navigation help" hidden>
+    Drag to pan · Scroll or pinch to zoom · Double-click to zoom in
+  </div>
+
+  <main id="diagram-wrap" aria-label="Diagram viewer">
+    <div id="loading">Loading diagram…</div>
+    <div id="error" role="alert">
+      <p><strong>Could not load the diagram.</strong></p>
+      <p>Browsers block loading local SVG files when this page is opened as <code>file://</code>. Run a small web server from this folder, then open the URL it prints.</p>
+      <p>Example (Python): <code>python -m http.server 8080</code><br />
+         Then open <code>http://localhost:8080/</code></p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.2/dist/svg-pan-zoom.min.js"></script>
+  <script>
+    const SVG_FILE = "Collection Decision Tree.svg";
+    const wrap = document.getElementById("diagram-wrap");
+    const loading = document.getElementById("loading");
+    const errorEl = document.getElementById("error");
+    const toolbar = document.getElementById("toolbar");
+    const helpPanel = document.getElementById("help-panel");
+    const btnHelp = document.getElementById("btn-help");
+
+    function setToolbarWidth() {
+      document.documentElement.style.setProperty(
+        "--toolbar-width",
+        toolbar.offsetWidth + "px"
+      );
+    }
+
+    let panZoom = null;
+
+    function bindControls() {
+      document.getElementById("btn-fit").addEventListener("click", () => {
+        panZoom.resize();
+        panZoom.fit();
+        panZoom.center();
+      });
+      document.getElementById("btn-center").addEventListener("click", () => {
+        panZoom.center();
+      });
+      document.getElementById("btn-zoom-in").addEventListener("click", () => {
+        panZoom.zoomIn();
+      });
+      document.getElementById("btn-zoom-out").addEventListener("click", () => {
+        panZoom.zoomOut();
+      });
+      document.getElementById("btn-reset").addEventListener("click", () => {
+        panZoom.resetZoom();
+        panZoom.resetPan();
+        panZoom.fit();
+        panZoom.center();
+      });
+
+      btnHelp.addEventListener("click", () => {
+        const open = !helpPanel.classList.contains("visible");
+        helpPanel.classList.toggle("visible", open);
+        helpPanel.hidden = !open;
+        btnHelp.setAttribute("aria-expanded", String(open));
+        btnHelp.title = open ? "Hide help" : "Show help";
+      });
+    }
+
+    function initPanZoom(svgEl) {
+      panZoom = svgPanZoom(svgEl, {
+        zoomEnabled: true,
+        panEnabled: true,
+        controlIconsEnabled: false,
+        fit: true,
+        center: true,
+        minZoom: 0.05,
+        maxZoom: 30,
+        zoomScaleSensitivity: 0.3,
+        mouseWheelZoomEnabled: true,
+        preventMouseEventsDefault: false,
+        dblClickZoomEnabled: true,
+      });
+
+      bindControls();
+
+      window.addEventListener("resize", () => {
+        panZoom.resize();
+        panZoom.fit();
+        panZoom.center();
+      });
+    }
+
+    async function loadDiagram() {
+      setToolbarWidth();
+      try {
+        const res = await fetch(encodeURI(SVG_FILE));
+        if (!res.ok) throw new Error(res.status + " " + res.statusText);
+        const text = await res.text();
+        const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+        const parseError = doc.querySelector("parsererror");
+        if (parseError) throw new Error("Invalid SVG");
+
+        const svg = doc.documentElement;
+        if (svg.localName !== "svg") throw new Error("Expected SVG root");
+
+        loading.classList.add("hidden");
+        wrap.appendChild(svg);
+        initPanZoom(svg);
+      } catch (err) {
+        console.error(err);
+        loading.classList.add("hidden");
+        errorEl.classList.add("visible");
+      }
+    }
+
+    loadDiagram();
+    window.addEventListener("resize", setToolbarWidth);
+  </script>
+</body>
+</html>
