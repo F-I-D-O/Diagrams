@@ -8,6 +8,9 @@ classes: {
     shape: diamond
     width: 250
     height: 250
+    style: {
+      font-size: 20
+    }
   }
 
   decision_dependency: {
@@ -24,16 +27,20 @@ classes: {
 
   collection_type: {
     shape: rectangle
-    width: 180
+    width: 240
     height: 60
+    style: {
+      font-size: 20
+    }
   }
 
   collection: {
     shape: rectangle
-    width: 180
+    width: 190
     height: 60
     style: {
       border-radius: 100
+      font-size: 20
     }
   }
 
@@ -81,15 +88,20 @@ start_wrapper: "" {
         <div style="display:flex;align-items:center;gap:8px;margin:2px 0;"><span style="display:inline-block;width:14px;height:14px;background-color:#90f597;border:1px solid #333;"></span><span>Sets</span></div>
         <div style="display:flex;align-items:center;gap:8px;margin:2px 0;"><span style="display:inline-block;width:14px;height:14px;background-color:#fa8989;border:1px solid #333;"></span><span>Maps</span></div>
       </div>
-    |
+    | {
+        style: {
+          font-size: 20
+        }
+    }
     style: {
       border-radius: 100
+      font-size: 25
     }
   }
 }
 start_wrapper.start -> index_or_not
 
-index_or_not: Do you need \n index->value mapping? \n (searching in collection, ...) {
+index_or_not: Do you need \n index->value mapping? \n (searching in \n collection, ...) {
   class: decision
 }
 index_or_not -> index_type: Yes {
@@ -115,7 +127,7 @@ index_type -> ordered_keys_needed: General {
   class: arrow
 }
 
-contains_needed: Frequent need of checking \n if the collection contains \n some member? {
+contains_needed: Frequent need \n of checking if the \n collection contains \n some member? {
   class: decision
 }
 contains_needed -> is_set_iteration_needed: Yes {
@@ -135,7 +147,7 @@ rtree: RTree {
   link: https://en.wikipedia.org/wiki/R-tree
 }
 
-fast_removal_needed: Do you need to remove \n from the collection often? {
+fast_removal_needed: Do you need to \n remove from the \n collection often? {
   class: decision
 }
 fast_removal_needed -> removal_type: Yes {
@@ -158,7 +170,7 @@ is_size_constant -> java_dynamic_array_contiguous_memory_dependency_acceptable: 
   class: arrow
 }
 
-heterogenous_values: Heterogenous value types? {
+heterogenous_values: Heterogenous \n value types? {
   class: decision
 }
 heterogenous_values -> tuple: Yes {
@@ -352,7 +364,7 @@ array -> java_array: Java {
   class: arrow
 }
 
-is_member_default_constructible: Default-constructible members? {
+is_member_default_constructible: Default-constructible \n members? {
   class: [decision; arrays]
 }
 is_member_default_constructible -> array: Yes {
@@ -457,7 +469,7 @@ ordered_keys_needed -> is_map_iteration_needed: No {
   class: arrow
 }
 
-is_map_iteration_needed: Do you need to \n iteration or determinism? {
+is_map_iteration_needed: Do you need \n iteration or \n determinism? {
   class: [decision; maps]
 }
 is_map_iteration_needed -> hash_map: No {

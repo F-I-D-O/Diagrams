@@ -163,6 +163,13 @@
 
     let panZoom = null;
 
+    function openExternalLinksInNewTab(root) {
+      root.querySelectorAll("a[href]").forEach((a) => {
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      });
+    }
+
     function bindControls() {
       document.getElementById("btn-fit").addEventListener("click", () => {
         panZoom.resize();
@@ -233,6 +240,7 @@
 
         loading.classList.add("hidden");
         wrap.appendChild(svg);
+        openExternalLinksInNewTab(svg);
         initPanZoom(svg);
       } catch (err) {
         console.error(err);
