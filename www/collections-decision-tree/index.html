@@ -29,6 +29,16 @@
       border-left: 1px solid #cfd2dd;
       box-shadow: -1px 0 3px rgba(10, 15, 37, 0.08);
     }
+    #toolbar.collapsed {
+      padding: 0.4rem;
+      gap: 0.25rem;
+    }
+    #toolbar.collapsed button:not(#btn-toggle-toolbar) {
+      display: none;
+    }
+    #btn-toggle-toolbar {
+      font-weight: 600;
+    }
     #toolbar button {
       font: inherit;
       font-size: 0.875rem;
@@ -83,6 +93,9 @@
       cursor: grab;
     }
     #diagram-wrap:active { cursor: grabbing; }
+    #diagram-wrap {
+      touch-action: none;
+    }
     #diagram-wrap svg {
       display: block;
       width: 100%;
@@ -121,6 +134,7 @@
 </head>
 <body>
   <aside id="toolbar" aria-label="Diagram controls">
+    <button type="button" id="btn-toggle-toolbar" title="Hide navigation bar" aria-expanded="true" aria-controls="toolbar">⟨</button>
     <button type="button" id="btn-fit" title="Fit diagram in view">Fit</button>
     <button type="button" id="btn-center" title="Center diagram">Center</button>
     <button type="button" id="btn-zoom-in" title="Zoom in">+</button>
@@ -153,6 +167,7 @@
     const toolbar = document.getElementById("toolbar");
     const helpPanel = document.getElementById("help-panel");
     const btnHelp = document.getElementById("btn-help");
+    const btnToggleToolbar = document.getElementById("btn-toggle-toolbar");
 
     function setToolbarWidth() {
       document.documentElement.style.setProperty(
@@ -171,6 +186,18 @@
     }
 
     function bindControls() {
+      btnToggleToolbar.addEventListener("click", () => {
+        const collapsed = !toolbar.classList.contains("collapsed");
+        toolbar.classList.toggle("collapsed", collapsed);
+        btnToggleToolbar.setAttribute("aria-expanded", String(!collapsed));
+        btnToggleToolbar.title = collapsed ? "Show navigation bar" : "Hide navigation bar";
+        btnToggleToolbar.textContent = collapsed ? "⟩" : "⟨";
+        setToolbarWidth();
+        if (panZoom) {
+          panZoom.resize();
+        }
+      });
+
       document.getElementById("btn-fit").addEventListener("click", () => {
         panZoom.resize();
         panZoom.fit();
@@ -217,12 +244,119 @@
       });
 
       bindControls();
+      bindTouchGestures(wrap, panZoom);
 
       window.addEventListener("resize", () => {
         panZoom.resize();
         panZoom.fit();
         panZoom.center();
       });
+    }
+
+    function bindTouchGestures(targetEl, panZoomInstance) {
+      const pointers = new Map();
+
+      let lastPinchDistance = null;
+      let lastPinchCenter = null;
+      let lastPanPoint = null;
+
+      function getDistance(a, b) {
+        const dx = a.clientX - b.clientX;
+        const dy = a.clientY - b.clientY;
+        return Math.hypot(dx, dy);
+      }
+
+      function getCenter(a, b) {
+        return {
+          clientX: (a.clientX + b.clientX) / 2,
+          clientY: (a.clientY + b.clientY) / 2,
+        };
+      }
+
+      function clampZoom(z) {
+        const min = panZoomInstance.getMinZoom ? panZoomInstance.getMinZoom() : 0.05;
+        const max = panZoomInstance.getMaxZoom ? panZoomInstance.getMaxZoom() : 30;
+        return Math.max(min, Math.min(max, z));
+      }
+
+      targetEl.addEventListener("pointerdown", (e) => {
+        // Only handle touch/pen. Mouse is already handled by svg-pan-zoom.
+        if (e.pointerType === "mouse") return;
+        try { targetEl.setPointerCapture(e.pointerId); } catch {}
+        pointers.set(e.pointerId, e);
+        if (pointers.size === 1) {
+          lastPanPoint = { clientX: e.clientX, clientY: e.clientY };
+        } else if (pointers.size === 2) {
+          const [p1, p2] = Array.from(pointers.values());
+          lastPinchDistance = getDistance(p1, p2);
+          lastPinchCenter = getCenter(p1, p2);
+          lastPanPoint = null;
+        }
+      }, { passive: false });
+
+      targetEl.addEventListener("pointermove", (e) => {
+        if (e.pointerType === "mouse") return;
+        if (!pointers.has(e.pointerId)) return;
+        pointers.set(e.pointerId, e);
+        e.preventDefault();
+
+        if (pointers.size === 1) {
+          const p = Array.from(pointers.values())[0];
+          if (!lastPanPoint) lastPanPoint = { clientX: p.clientX, clientY: p.clientY };
+          const dx = p.clientX - lastPanPoint.clientX;
+          const dy = p.clientY - lastPanPoint.clientY;
+          lastPanPoint = { clientX: p.clientX, clientY: p.clientY };
+          // svg-pan-zoom expects deltas in screen px
+          panZoomInstance.panBy({ x: dx, y: dy });
+          return;
+        }
+
+        if (pointers.size === 2) {
+          const [p1, p2] = Array.from(pointers.values());
+          const distance = getDistance(p1, p2);
+          const center = getCenter(p1, p2);
+
+          if (lastPinchDistance != null && lastPinchCenter != null) {
+            // Pan with the moving center (two-finger drag)
+            const cdx = center.clientX - lastPinchCenter.clientX;
+            const cdy = center.clientY - lastPinchCenter.clientY;
+            if (cdx || cdy) panZoomInstance.panBy({ x: cdx, y: cdy });
+
+            // Zoom relative to previous distance
+            const ratio = distance / lastPinchDistance;
+            if (isFinite(ratio) && ratio > 0) {
+              const currentZoom = panZoomInstance.getZoom();
+              const nextZoom = clampZoom(currentZoom * ratio);
+              if (nextZoom !== currentZoom) {
+                panZoomInstance.zoomAtPoint(nextZoom, { x: center.clientX, y: center.clientY });
+              }
+            }
+          }
+
+          lastPinchDistance = distance;
+          lastPinchCenter = center;
+          return;
+        }
+      }, { passive: false });
+
+      function endPointer(e) {
+        if (e.pointerType === "mouse") return;
+        pointers.delete(e.pointerId);
+        if (pointers.size === 1) {
+          const p = Array.from(pointers.values())[0];
+          lastPanPoint = { clientX: p.clientX, clientY: p.clientY };
+          lastPinchDistance = null;
+          lastPinchCenter = null;
+        } else {
+          lastPanPoint = null;
+          lastPinchDistance = null;
+          lastPinchCenter = null;
+        }
+      }
+
+      targetEl.addEventListener("pointerup", endPointer);
+      targetEl.addEventListener("pointercancel", endPointer);
+      targetEl.addEventListener("lostpointercapture", endPointer);
     }
 
     async function loadDiagram() {
