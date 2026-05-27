@@ -263,7 +263,7 @@
 
     function wrapPanZoomForDebug(instance) {
       if (!DEBUG) return;
-      ["fit", "center", "resetZoom", "resetPan", "resize", "zoomAtPoint", "panBy"].forEach((name) => {
+      ["fit", "center", "resetZoom", "resetPan", "resize", "zoomAtPoint", "zoomAtPointBy", "panBy"].forEach((name) => {
         const original = instance[name].bind(instance);
         instance[name] = (...args) => {
           debug(`${name}(${args.map((a) => JSON.stringify(a)).join(", ")})`);
@@ -446,8 +446,8 @@
             // Zoom relative to previous distance
             const ratio = distance / lastPinchDistance;
             if (isFinite(ratio) && ratio > 0 && ratio !== 1) {
-              // zoomAtPoint expects a relative multiplier by default, not an absolute level.
-              panZoomInstance.zoomAtPoint(ratio, zoomPoint);
+              // zoomAtPoint is absolute; zoomAtPointBy applies a per-frame multiplier.
+              panZoomInstance.zoomAtPointBy(ratio, zoomPoint);
               updateDebugState(`ratio=${ratio.toFixed(3)}`);
             }
           }
@@ -478,7 +478,6 @@
 
       targetEl.addEventListener("pointerup", endPointer);
       targetEl.addEventListener("pointercancel", endPointer);
-      targetEl.addEventListener("lostpointercapture", endPointer);
     }
 
     async function loadDiagram() {
