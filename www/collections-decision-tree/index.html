@@ -153,6 +153,28 @@
       color: #676c7e;
     }
     #loading.hidden { display: none; }
+    #debug-overlay {
+      display: none;
+      position: fixed;
+      left: 0.5rem;
+      bottom: 0.5rem;
+      z-index: 6;
+      max-width: min(24rem, calc(100vw - 1rem));
+      max-height: 40vh;
+      overflow: auto;
+      padding: 0.5rem 0.65rem;
+      font: 0.7rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #0a0f25;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid #cfd2dd;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(10, 15, 37, 0.12);
+      pointer-events: none;
+      white-space: pre-wrap;
+    }
+    body.debug #debug-overlay {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -172,6 +194,8 @@
     Drag to pan · Scroll or pinch to zoom · Double-click to zoom in
   </div>
 
+  <div id="debug-overlay" aria-hidden="true"></div>
+
   <main id="diagram-wrap" aria-label="Diagram viewer">
     <div id="loading">Loading diagram…</div>
     <div id="error" role="alert">
@@ -185,7 +209,9 @@
   <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.2/dist/svg-pan-zoom.min.js"></script>
   <script>
     const SVG_FILE = "Collection Decision Tree.svg";
+    const DEBUG = new URLSearchParams(location.search).has("debug");
     const wrap = document.getElementById("diagram-wrap");
+    const debugOverlay = document.getElementById("debug-overlay");
     const loading = document.getElementById("loading");
     const errorEl = document.getElementById("error");
     const toolbar = document.getElementById("toolbar");
@@ -206,6 +232,45 @@
     }
 
     let panZoom = null;
+    let touchPointerCount = 0;
+    const debugLog = [];
+
+    if (DEBUG) {
+      document.body.classList.add("debug");
+    }
+
+    function debug(msg) {
+      if (!DEBUG) return;
+      const line = `${new Date().toISOString().slice(11, 23)} ${msg}`;
+      debugLog.unshift(line);
+      debugLog.length = 12;
+      debugOverlay.textContent = debugLog.join("\n");
+      console.log("[diagram]", msg);
+    }
+
+    function updateDebugState(extra = "", logEvent = false) {
+      if (!DEBUG || !panZoom) return;
+      const status = `state zoom=${panZoom.getZoom().toFixed(3)} pointers=${touchPointerCount}${extra ? " " + extra : ""}`;
+      if (logEvent) debug(status);
+      else if (debugLog.length === 0 || debugLog[0].startsWith("state zoom=")) {
+        debugLog[0] = status;
+      } else {
+        debugLog.unshift(status);
+        debugLog.length = 13;
+      }
+      debugOverlay.textContent = debugLog.join("\n");
+    }
+
+    function wrapPanZoomForDebug(instance) {
+      if (!DEBUG) return;
+      ["fit", "center", "resetZoom", "resetPan", "resize", "zoomAtPoint", "panBy"].forEach((name) => {
+        const original = instance[name].bind(instance);
+        instance[name] = (...args) => {
+          debug(`${name}(${args.map((a) => JSON.stringify(a)).join(", ")})`);
+          return original(...args);
+        };
+      });
+    }
 
     function openExternalLinksInNewTab(root) {
       root.querySelectorAll("a[href]").forEach((a) => {
@@ -276,14 +341,38 @@
         mouseWheelZoomEnabled: true,
         preventMouseEventsDefault: false,
         dblClickZoomEnabled: true,
+        // Our pointer handlers own touch; svg-pan-zoom touch pan was overwriting pinch zoom.
+        customEventsHandler: {
+          haltEventListeners: [
+            "touchstart",
+            "touchmove",
+            "touchend",
+            "touchleave",
+            "touchcancel",
+          ],
+          init() {},
+          destroy() {},
+        },
       });
 
+      wrapPanZoomForDebug(panZoom);
       bindControls();
       bindTouchGestures(wrap, panZoom);
 
       window.addEventListener("resize", () => {
+        debug("window resize");
+        if (touchPointerCount > 0) {
+          debug("resize ignored during touch gesture");
+          return;
+        }
         panZoom.resize();
       });
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", () => {
+          debug(`visualViewport resize scale=${window.visualViewport.scale.toFixed(3)}`);
+        });
+      }
     }
 
     function bindTouchGestures(targetEl, panZoomInstance) {
@@ -306,17 +395,13 @@
         };
       }
 
-      function clampZoom(z) {
-        const min = panZoomInstance.getMinZoom ? panZoomInstance.getMinZoom() : 0.05;
-        const max = panZoomInstance.getMaxZoom ? panZoomInstance.getMaxZoom() : 30;
-        return Math.max(min, Math.min(max, z));
-      }
-
       targetEl.addEventListener("pointerdown", (e) => {
         // Only handle touch/pen. Mouse is already handled by svg-pan-zoom.
         if (e.pointerType === "mouse") return;
         try { targetEl.setPointerCapture(e.pointerId); } catch {}
         pointers.set(e.pointerId, e);
+        touchPointerCount = pointers.size;
+        debug(`pointerdown id=${e.pointerId} count=${pointers.size}`);
         if (pointers.size === 1) {
           lastPanPoint = { clientX: e.clientX, clientY: e.clientY };
         } else if (pointers.size === 2) {
@@ -325,6 +410,7 @@
           lastPinchCenter = getCenter(p1, p2);
           lastPanPoint = null;
         }
+        updateDebugState("", true);
       }, { passive: false });
 
       targetEl.addEventListener("pointermove", (e) => {
@@ -359,12 +445,10 @@
 
             // Zoom relative to previous distance
             const ratio = distance / lastPinchDistance;
-            if (isFinite(ratio) && ratio > 0) {
-              const currentZoom = panZoomInstance.getZoom();
-              const nextZoom = clampZoom(currentZoom * ratio);
-              if (nextZoom !== currentZoom) {
-                panZoomInstance.zoomAtPoint(nextZoom, zoomPoint);
-              }
+            if (isFinite(ratio) && ratio > 0 && ratio !== 1) {
+              // zoomAtPoint expects a relative multiplier by default, not an absolute level.
+              panZoomInstance.zoomAtPoint(ratio, zoomPoint);
+              updateDebugState(`ratio=${ratio.toFixed(3)}`);
             }
           }
 
@@ -377,6 +461,8 @@
       function endPointer(e) {
         if (e.pointerType === "mouse") return;
         pointers.delete(e.pointerId);
+        touchPointerCount = pointers.size;
+        debug(`pointerup id=${e.pointerId} count=${pointers.size}`);
         if (pointers.size === 1) {
           const p = Array.from(pointers.values())[0];
           lastPanPoint = { clientX: p.clientX, clientY: p.clientY };
@@ -387,6 +473,7 @@
           lastPinchDistance = null;
           lastPinchCenter = null;
         }
+        updateDebugState("", true);
       }
 
       targetEl.addEventListener("pointerup", endPointer);
