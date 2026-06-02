@@ -1,0 +1,93 @@
+classes {
+    write: {
+        style: {
+            stroke: red
+        }
+    }
+    read: {
+        style: {
+            stroke: green
+        }
+    }
+    call: {
+        style: {
+            stroke: blue
+        }
+    }
+    content: {
+        style: {
+            stroke: orange
+        }
+    }
+}
+
+
+windows: Windows {
+    link: https://en.wikipedia.org/wiki/Microsoft_Windows
+    etw: Event Tracing for Windows {
+        link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/event-tracing-for-windows
+    }
+}
+
+visual_studio: Visual Studio {
+    link: https://en.wikipedia.org/wiki/Visual_Studio
+    windows_performance_toolkit: Windows Performance Toolkit {
+        link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/
+
+        wpr: Windows Performance Recorder {
+            link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-recorder
+        }
+
+        wpa: Windows Performance Analyzer {
+            link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-analyzer
+        }
+    }
+
+    diagnostics_tools: Diagnostics Tools {
+        link: https://learn.microsoft.com/en-us/visualstudio/profiling/diagnostic-tools
+
+        vsdiagnostics: VSDiagnostics.exe {
+            link: https://learn.microsoft.com/en-us/visualstudio/profiling/profile-apps-from-command-line
+        }
+    }
+}
+
+etl: ETL {
+    link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/etl-files
+}
+
+diagsession: DiagSession {
+    link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/diagsession-files
+}
+
+# File write
+windows.etw -> etl: {
+    class: write
+}
+visual_studio.windows_performance_toolkit.wpr -> etl: {
+    class: write
+}
+visual_studio.diagnostics_tools.vsdiagnostics -> diagsession: {
+    class: write
+}
+
+# File read
+etl -> visual_studio.windows_performance_toolkit.wpa: {
+    class: read
+}
+diagsession -> visual_studio.diagnostics_tools {
+    class: read
+}
+
+# Calls
+visual_studio.windows_performance_toolkit.wpr -> windows.etw: {
+    class: call
+}
+visual_studio.diagnostics_tools.vsdiagnostics -> windows.etw: {
+    class: call
+}
+
+# File content
+diagsession -> etl: {
+    class: content
+}
