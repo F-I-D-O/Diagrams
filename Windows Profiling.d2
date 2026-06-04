@@ -19,6 +19,29 @@ classes {
             stroke: orange
         }
     }
+    file: {
+        shape: cylinder
+    }
+}
+
+vars: {
+    d2-legend: {
+        a.style.opacity: 0
+        b.style.opacity: 0
+    
+        a -> b: Input {
+            class: read
+        }
+        a -> b: Output {
+            class: write
+        }
+        a -> b: Call {
+            class: call
+        }
+        a -> b: Content {
+            class: content
+        }
+    }
 }
 
 
@@ -43,7 +66,7 @@ visual_studio: Visual Studio {
         }
     }
 
-    diagnostics_tools: Diagnostics Tools {
+    diagnostics_tools: Diagnostics Hub {
         link: https://learn.microsoft.com/en-us/visualstudio/profiling/diagnostic-tools
 
         vsdiagnostics: VSDiagnostics.exe {
@@ -53,10 +76,12 @@ visual_studio: Visual Studio {
 }
 
 etl: ETL {
+    class: file
     link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/etl-files
 }
 
 diagsession: DiagSession {
+    class: file
     link: https://learn.microsoft.com/en-us/windows-hardware/test/wpt/diagsession-files
 }
 
