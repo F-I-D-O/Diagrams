@@ -1,0 +1,228 @@
+# Build Tools and toolchains
+# Converted from Build tools and toolchains.drawio.xml.
+
+direction: down
+
+classes: {
+  group: {
+    shape: rectangle
+    style: {
+      font-size: 20
+    }
+  }
+
+  toolchain: {
+    grid-columns: 1
+  }
+
+  tool: {
+    shape: rectangle
+    width: 140
+    height: 70
+  }
+
+  compiler: {
+    style: {
+      fill: "#d7ecff"
+      stroke: "#2f6f9f"
+    }
+  }
+
+  linker: {
+    style: {
+      fill: "#fff0bf"
+      stroke: "#9a6b00"
+    }
+  }
+
+  debugger: {
+    style: {
+      fill: "#dff5d8"
+      stroke: "#3d7f3a"
+    }
+  }
+
+  strong: {
+    style: {
+      stroke-width: 3
+    }
+  }
+}
+
+vars: {
+  d2-legend: {
+    compiler: Compiler {
+      class: [tool; compiler]
+    }
+
+    linker: Linker {
+      class: [tool; linker]
+    }
+
+    debugger: Debugger {
+      class: [tool; debugger]
+    }
+  }
+}
+
+grid-rows: 3
+
+ide: IDE {
+  class: group
+  link: https://en.wikipedia.org/wiki/Integrated_development_environment
+
+  visual_studio: Visual Studio {
+    class: tool
+    link: https://learn.microsoft.com/en-us/visualstudio/ide/
+  }
+
+  clion: Clion {
+    class: tool
+    link: https://www.jetbrains.com/clion/
+  }
+
+  vscode: Visual Studio Code {
+    class: tool
+    link: https://code.visualstudio.com/
+  }
+}
+
+build_automation_tools: Build Automation Tools {
+  class: group
+  link: https://en.wikipedia.org/wiki/Build_automation
+
+  build_script_generation: Build script generation {
+    class: group
+
+    cmake: CMake {
+      class: tool
+      link: https://en.wikipedia.org/wiki/CMake
+    }
+  }
+
+  build_sequencing: Build Sequencing (Generators) {
+    class: group
+
+    msbuild: MSBuild {
+      class: tool
+      link: https://en.wikipedia.org/wiki/MSBuild
+    }
+
+    nmake: NMake {
+      class: tool
+      link: https://learn.microsoft.com/en-us/cpp/build/reference/nmake-reference
+    }
+
+    ninja: Ninja {
+      class: tool
+      link: https://en.wikipedia.org/wiki/Ninja_(build_system)
+    }
+
+    make: Make {
+      class: tool
+      link: https://en.wikipedia.org/wiki/Make_(software)
+    }
+  }
+}
+
+toolchains: Compiler Toolchains {
+  msvc: MSVC {
+    class: [group; toolchain]
+    link: https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B
+
+    cl_exe: cl.exe {
+      class: [tool; compiler]
+      link: https://learn.microsoft.com/en-us/cpp/build/walkthrough-compiling-a-native-cpp-program-on-the-command-line
+    }
+
+    link_exe: link.exe {
+      class: [tool; linker]
+      link: https://learn.microsoft.com/en-us/cpp/build/reference/linking
+    }
+
+    devenv_exe: devenv.exe {
+      class: [tool; debugger]
+    }
+  }
+
+  gcc: GCC {
+    class: [group; toolchain]
+    link: https://en.wikipedia.org/wiki/GNU_Compiler_Collection
+
+    gpp: "g++" {
+      class: [tool; compiler]
+    }
+
+    ld: ld {
+      class: [tool; linker]
+    }
+
+    gdb: GDB {
+      class: [tool; debugger]
+      link: https://en.wikipedia.org/wiki/GNU_Debugger
+    }
+  }
+
+  llvm: LLVM {
+    class: [group; toolchain]
+    link: https://en.wikipedia.org/wiki/LLVM
+    
+    clangpp: "clang++" {
+      class: [tool; compiler]
+      link: https://en.wikipedia.org/wiki/Clang
+    }
+
+    ld: ld {
+      class: [tool; linker]
+    }
+
+    lldb: LLDB {
+      class: [tool; debugger]
+      link: https://en.wikipedia.org/wiki/LLDB_(debugger)
+    }
+  }
+}
+
+# Build tool and IDE relationships
+ide.visual_studio -> build_automation_tools.build_sequencing.msbuild
+ide.visual_studio -> build_automation_tools.build_script_generation.cmake: {
+  class: strong
+}
+ide.clion -> build_automation_tools.build_script_generation.cmake: {
+  class: strong
+}
+ide.vscode -> build_automation_tools.build_script_generation.cmake: {
+  class: strong
+}
+
+# Build script generation to build sequencing
+build_automation_tools.build_script_generation.cmake -> build_automation_tools.build_sequencing.msbuild
+build_automation_tools.build_script_generation.cmake -> build_automation_tools.build_sequencing.nmake
+build_automation_tools.build_script_generation.cmake -> build_automation_tools.build_sequencing.ninja: {
+  class: strong
+}
+build_automation_tools.build_script_generation.cmake -> build_automation_tools.build_sequencing.make
+
+# MSVC toolchain
+build_automation_tools.build_sequencing.msbuild -> toolchains.msvc.cl_exe
+build_automation_tools.build_sequencing.nmake -> toolchains.msvc.cl_exe
+build_automation_tools.build_sequencing.ninja -> toolchains.msvc.cl_exe: {
+  class: strong
+}
+toolchains.msvc.cl_exe -> toolchains.msvc.link_exe: {
+  class: strong
+}
+
+# GCC toolchain
+build_automation_tools.build_sequencing.make -> toolchains.gcc.gpp
+build_automation_tools.build_sequencing.ninja -> toolchains.gcc.gpp: {
+  class: strong
+}
+toolchains.gcc.gpp -> toolchains.gcc.ld: {
+  class: strong
+}
+
+# LLVM toolchain
+build_automation_tools.build_sequencing.ninja -> toolchains.llvm.clangpp
+build_automation_tools.build_sequencing.make -> toolchains.llvm.clangpp
+toolchains.llvm.clangpp -> toolchains.llvm.ld

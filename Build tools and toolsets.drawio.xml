@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0">
+  <diagram id="korEPfsjNzB01qUrrjwn" name="Stránka-1">
+    <mxGraphModel dx="1562" dy="1998" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" value="Compiler" vertex="1">
+          <mxGeometry height="115" width="741" x="59" y="300" as="geometry" />
+        </mxCell>
+        <UserObject label="Linker" link="https://en.wikipedia.org/wiki/Linker_(computing)" id="qMPUgD7ns0Wm7ig_32wK-6">
+          <mxCell parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" vertex="1">
+            <mxGeometry height="120" width="741" x="59" y="435" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="MSVC" link="https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B" id="qMPUgD7ns0Wm7ig_32wK-18">
+          <mxCell parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=default;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;dashPattern=1 1;" vertex="1">
+            <mxGeometry height="370" width="191" x="100" y="310" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="GCC" link="https://en.wikipedia.org/wiki/GNU_Compiler_Collection" id="qMPUgD7ns0Wm7ig_32wK-14">
+          <mxCell parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=default;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;dashPattern=1 1;" vertex="1">
+            <mxGeometry height="370" width="190" x="330" y="310" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" value="&lt;a href=&quot;https://en.wikipedia.org/wiki/Build_automation&quot;&gt;Build Automation Tools&lt;/a&gt;" vertex="1">
+          <mxGeometry height="270" width="741" x="59" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="qMPUgD7ns0Wm7ig_32wK-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" value="Build&amp;nbsp;&lt;br&gt;script&lt;br&gt;generation" vertex="1">
+          <mxGeometry height="110" width="680" x="100" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-34" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" value="Build&amp;nbsp;&lt;br&gt;Sequencing" vertex="1">
+          <mxGeometry height="120" width="680" x="100" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" value="IDE" vertex="1">
+          <mxGeometry height="120" width="741" x="59" y="-130" as="geometry" />
+        </mxCell>
+        <UserObject label="Visual Studio" link="https://learn.microsoft.com/en-us/visualstudio/ide/" id="zuZWk_k6c7Esk0SzwdNz-18">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="160" y="-105" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-23" edge="1" parent="1" source="zuZWk_k6c7Esk0SzwdNz-53" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-18" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="230" y="340" as="sourcePoint" />
+            <mxPoint x="290" y="20" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-24" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-16" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-53" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="210" y="325" as="sourcePoint" />
+            <mxPoint x="228.03999999999996" y="413" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="Make" link="https://en.wikipedia.org/wiki/Make_(software)" id="zuZWk_k6c7Esk0SzwdNz-25">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="67.5" width="140" x="625" y="162.5" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="CMake" link="https://en.wikipedia.org/wiki/CMake" id="zuZWk_k6c7Esk0SzwdNz-26">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="344" y="40" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-27" edge="1" parent="1" source="zuZWk_k6c7Esk0SzwdNz-26" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;strokeWidth=3;" target="zuZWk_k6c7Esk0SzwdNz-18" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="240" y="125" as="sourcePoint" />
+            <mxPoint x="240" y="-160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-29" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-16" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeWidth=3;" target="zuZWk_k6c7Esk0SzwdNz-30" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="210" y="325" as="sourcePoint" />
+            <mxPoint x="240" y="-160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="Ninja" link="https://en.wikipedia.org/wiki/Ninja_(build_system)" id="zuZWk_k6c7Esk0SzwdNz-30">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=218;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="67.5" width="140" x="475" y="162.5" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-31" edge="1" parent="1" source="zuZWk_k6c7Esk0SzwdNz-26" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=3;" target="zuZWk_k6c7Esk0SzwdNz-30" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="240" y="40" as="sourcePoint" />
+            <mxPoint x="240" y="-160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-33" edge="1" parent="1" source="zuZWk_k6c7Esk0SzwdNz-26" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-25" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="410" y="110" as="sourcePoint" />
+            <mxPoint x="500" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-37" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-12" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-25" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="325" as="sourcePoint" />
+            <mxPoint x="590" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-39" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-12" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeWidth=3;" target="zuZWk_k6c7Esk0SzwdNz-30" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="325" as="sourcePoint" />
+            <mxPoint x="590" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="MSBuild" link="https://en.wikipedia.org/wiki/MSBuild" id="zuZWk_k6c7Esk0SzwdNz-53">
+          <mxCell parent="1" style="swimlane;fontSize=11;swimlaneLine=1;glass=0;shadow=0;sketch=0;rounded=0;fillStyle=auto;startSize=30;" vertex="1">
+            <mxGeometry height="60" width="130" x="170" y="167.5" as="geometry">
+              <mxRectangle height="30" width="140" x="165" y="300" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-56" parent="zuZWk_k6c7Esk0SzwdNz-53" style="text;html=1;strokeColor=none;fillColor=default;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;spacingTop=0;spacingLeft=5;" value="&lt;a href=&quot;https://learn.microsoft.com/en-us/visualstudio/msbuild/&quot;&gt;micsosoft home: &lt;/a&gt;" vertex="1">
+          <mxGeometry height="30" width="130" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="zuZWk_k6c7Esk0SzwdNz-58" edge="1" parent="1" source="zuZWk_k6c7Esk0SzwdNz-53" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-26" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="240" y="655" as="sourcePoint" />
+            <mxPoint x="240" y="369.99999999999955" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="Clion" id="qMPUgD7ns0Wm7ig_32wK-1">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="470" y="-105" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="qMPUgD7ns0Wm7ig_32wK-2" edge="1" parent="1" source="zuZWk_k6c7Esk0SzwdNz-26" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;strokeWidth=4;" target="qMPUgD7ns0Wm7ig_32wK-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="540" as="sourcePoint" />
+            <mxPoint x="590" y="-50" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qMPUgD7ns0Wm7ig_32wK-4" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-3" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-26" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="670" y="190" as="sourcePoint" />
+            <mxPoint x="720" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="qMPUgD7ns0Wm7ig_32wK-5" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-16" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="qMPUgD7ns0Wm7ig_32wK-3" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="210" y="325" as="sourcePoint" />
+            <mxPoint x="660" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="NMake" link="https://learn.microsoft.com/en-us/cpp/build/reference/nmake-reference" id="qMPUgD7ns0Wm7ig_32wK-3">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="67.5" width="140" x="315" y="162.5" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="g++" id="qMPUgD7ns0Wm7ig_32wK-12">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="365" y="325" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="ld" id="qMPUgD7ns0Wm7ig_32wK-13">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="365" y="460" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="qMPUgD7ns0Wm7ig_32wK-15" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-13" style="endArrow=none;html=1;rounded=0;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeWidth=3;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="qMPUgD7ns0Wm7ig_32wK-12" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points" />
+            <mxPoint x="410" y="705" as="sourcePoint" />
+            <mxPoint x="423.3571428571429" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="cl.exe" link="https://learn.microsoft.com/en-us/cpp/build/walkthrough-compiling-a-native-cpp-program-on-the-command-line" id="qMPUgD7ns0Wm7ig_32wK-16">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="140" y="325" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="link.exe" link="https://learn.microsoft.com/en-us/cpp/build/reference/linking" id="qMPUgD7ns0Wm7ig_32wK-17">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="140" y="460" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="qMPUgD7ns0Wm7ig_32wK-19" edge="1" parent="1" source="qMPUgD7ns0Wm7ig_32wK-16" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=3;" target="qMPUgD7ns0Wm7ig_32wK-17" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="220" y="335" as="sourcePoint" />
+            <mxPoint x="555" y="248" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="LLVM" link="https://en.wikipedia.org/wiki/Clang" id="ZqQu4WQlWAovJs9rJeGj-1">
+          <mxCell parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=default;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;dashPattern=1 1;" vertex="1">
+            <mxGeometry height="370" width="190" x="570" y="310" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="ZqQu4WQlWAovJs9rJeGj-2" edge="1" parent="1" source="ZqQu4WQlWAovJs9rJeGj-3" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="zuZWk_k6c7Esk0SzwdNz-25" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="410" y="335" as="sourcePoint" />
+            <mxPoint x="705" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="clang++" id="ZqQu4WQlWAovJs9rJeGj-3">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="610" y="327.5" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="ld" id="ZqQu4WQlWAovJs9rJeGj-4">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="610" y="462.5" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="e9OzchtH-5rrhIa72emS-1" edge="1" parent="1" source="ZqQu4WQlWAovJs9rJeGj-3" style="endArrow=none;html=1;rounded=0;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="ZqQu4WQlWAovJs9rJeGj-4" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="690" y="358" as="sourcePoint" />
+            <mxPoint x="705" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="Debugger" link="https://en.wikipedia.org/wiki/Linker_(computing)" id="YO8iuZhFWwpVFcqVMkzp-1">
+          <mxCell parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;align=center;verticalAlign=top;fontSize=20;spacingLeft=5;dashed=1;horizontal=0;" vertex="1">
+            <mxGeometry height="120" width="741" x="59" y="570" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="LLDB" id="YO8iuZhFWwpVFcqVMkzp-2">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="600" y="595" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="GDB" id="YO8iuZhFWwpVFcqVMkzp-3">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="365" y="595" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="devenv.exe" id="YO8iuZhFWwpVFcqVMkzp-4">
+          <mxCell parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=70;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=11;fillColor=default;" vertex="1">
+            <mxGeometry height="70" width="140" x="140" y="595" as="geometry">
+              <mxRectangle height="30" width="70" x="320" y="360" as="alternateBounds" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
