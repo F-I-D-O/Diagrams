@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: euler-diagrams
+Version: 0.1.0
+Summary: Generator of rectangular Euler diagrams based on Dürrschnabel & Priss (2024), arXiv:2403.03801
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6
+Requires-Dist: python-sat>=1.8.dev1
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+
+# euler-diagrams
+
+Generator of rectangular Euler diagrams, based on
+[Dürrschnabel & Priss: *Realizability of Rectangular Euler Diagrams* (2024)](https://arxiv.org/abs/2403.03801).
+
+Status: the input format, the two-dimensional layout algorithm (`Euler2D`)
+and an SVG renderer are implemented.
+
+## Usage
+
+```bash
+python -m euler_diagrams examples/europe.yaml -o europe.svg
+```
+
+writes an SVG rendering ('-' for stdout), or reports that the set system has
+no rectangular Euler diagram. Without `-o`, a plain-text layout summary is
+printed instead. Programmatically, use `euler_diagrams.layout_2d(system)`,
+which returns a `Layout` or raises `NotRealizableError`, and
+`euler_diagrams.render_svg(layout)`.
+
+The SVG adapts to light and dark mode and colors sets with a fixed,
+colorblind-validated categorical palette; every set is labeled directly at
+its rectangle's top-left corner and every element at its point. At most 8
+sets can be rendered (fixed palette slots; hues are never generated).
+Rectangles are inset by containment depth so nested or touching boundaries
+never coincide visually; the insets stay below one grid unit, which keeps
+point membership exact.
+
+## Algorithm
+
+The pipeline follows the paper's `Euler2D`: the set system is clarified into
+a formal context, its *extended Euler-poset* is built, and a width-four
+realizer is searched — one exists if and only if the diagram does (an
+NP-complete question; it is decided exactly by a SAT encoding with symmetry
+breaking instead of the paper's coloring heuristic). Two linear extensions
+per axis are then scanned into rectangle boundaries and element points.
+
+Known limitations:
+
+- Empty sets are rejected (the point-containment formalism cannot place an
+  empty rectangle meaningfully).
+- Sets with identical elements get identical rectangles, elements with
+  identical memberships identical points; renderers must offset them.
+- Two disjoint sets may be drawn as overlapping rectangles when no element
+  witnesses the overlap — the paper's diagram definition constrains only
+  point containment.
+
+## Input format
+
+Diagrams are described as YAML (or JSON) set systems, see
+[docs/input-format.md](docs/input-format.md) and
+[examples/languages.yaml](examples/languages.yaml):
+
+```yaml
+name: languages
+sets:
+  compiled: [c, cpp, rust, java]
+  gc: [java, go, python]
+  scripting: [python, js]
+```
+
+## Development
+
+```bash
+pip install -e '.[dev]'
+pytest
+```

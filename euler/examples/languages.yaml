@@ -1,0 +1,5 @@
+name: languages
+sets:
+  compiled: [c, cpp, rust, java]
+  gc: [java, go, python]
+  scripting: [python, js]

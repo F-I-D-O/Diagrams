@@ -1,0 +1,9 @@
+sets: 
+  DRT: [On-demand bus/van/car, Paratransit, Semi-fixed route bus, Taxi, Uber]
+  MoD: [Carsharing, Lime, On-demand bus/van/car, Paratransit, Semi-fixed route bus, Taxi, Uber]
+  Mass transit: [Train, Bus, Tram, Semi-fixed route buses, Subway, Trollybus, Ferry]
+links:
+  DRT: https://en.wikipedia.org/wiki/Demand-responsive_transport
+  Mass transit: https://en.wikipedia.org/wiki/Public_transport
+  Tram: https://en.wikipedia.org/wiki/Tram
+  Trollybus: https://en.wikipedia.org/wiki/Trolleybus

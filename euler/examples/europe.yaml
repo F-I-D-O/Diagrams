@@ -1,0 +1,9 @@
+# The supranational-bodies example from Dürrschnabel & Priss (arXiv:2403.03801),
+# Figure 2. Not representable in one dimension, but realizable in two.
+name: europe
+sets:
+  eea: [bulgaria, germany, Czechia, ireland, norway, sweden]
+  efta: [norway, switzerland]
+  eu: [bulgaria, croatia, Czechia, germany, ireland, sweden]
+  eurozone: [croatia, germany, ireland]
+  schengen: [croatia, germany, Czechia, norway, sweden, switzerland]

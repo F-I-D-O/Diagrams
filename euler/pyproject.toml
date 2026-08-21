@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "euler-diagrams"
+version = "0.1.0"
+description = "Generator of rectangular Euler diagrams based on Dürrschnabel & Priss (2024), arXiv:2403.03801"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6",
+    "python-sat>=1.8.dev1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
