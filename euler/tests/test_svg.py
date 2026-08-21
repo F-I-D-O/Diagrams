@@ -126,11 +126,12 @@ def test_large_group_flows_into_multiple_columns() -> None:
 
 
 def test_member_grid_two_columns_hand_checked() -> None:
-    from euler_diagrams.svg import _member_box_width, _member_grid
+    from euler_diagrams.svg import _member_box_size, _member_grid
 
     elements = ["aa", "bb", "cc", "dd", "ee"]
-    offsets, width, height = _member_grid(elements, 2)
-    box_width = _member_box_width("aa")
+    sizes = {element: _member_box_size([element]) for element in elements}
+    offsets, width, height = _member_grid(elements, 2, sizes)
+    box_width = sizes["aa"][0]
     assert width == 2 * box_width + 8
     assert height == 3 * 22 + 2 * 4
     assert offsets["aa"] == (-width / 2, -height / 2, box_width, 22.0)
@@ -138,10 +139,25 @@ def test_member_grid_two_columns_hand_checked() -> None:
     assert offsets["ee"][0] == -width / 2  # row-major wrap to first column
     assert offsets["ee"][1] == -height / 2 + 2 * 26
 
-    stacked, stack_width, stack_height = _member_grid(elements, 1)
+    stacked, stack_width, stack_height = _member_grid(elements, 1, sizes)
     assert stack_width == box_width
     assert stack_height == 5 * 22 + 4 * 4
     assert all(dx == -box_width / 2 for dx, _, _, _ in stacked.values())
+
+
+def test_member_grid_multiline_rows_grow() -> None:
+    from euler_diagrams.svg import _member_box_size, _member_grid
+
+    sizes = {
+        "one": _member_box_size(["one"]),
+        "two\nlines": _member_box_size(["two", "lines"]),
+    }
+    assert sizes["two\nlines"][1] == 22 + 14
+    offsets, _, height = _member_grid(["one", "two\nlines"], 2, sizes)
+    assert height == 36  # single row as tall as its tallest box
+    # the single-line box is vertically centered within the taller row
+    assert offsets["one"][1] == -height / 2 + (36 - 22) / 2
+    assert offsets["two\nlines"][1] == -height / 2
 
 
 def test_transportation_is_compact() -> None:
@@ -279,6 +295,42 @@ links:
 def test_unlinked_systems_render_without_anchors() -> None:
     svg = render_svg(layout_2d(load_set_system(EXAMPLES_DIR / "europe.yaml")))
     assert "<a " not in svg
+
+
+def test_multiline_labels_render_as_tspans() -> None:
+    from euler_diagrams import parse_set_system
+
+    system = parse_set_system(
+        """
+sets:
+  A: [long element name, y]
+labels:
+  A: "Set\\nA"
+  long element name: "long element\\nname"
+"""
+    )
+    layout = layout_2d(system)
+    svg = render_svg(layout)
+    root = ElementTree.fromstring(svg)
+    ns = "{http://www.w3.org/2000/svg}"
+    texts = {
+        tuple(tspan.text for tspan in text): text
+        for text in root.iter(f"{ns}text")
+        if len(text) > 0
+    }
+    assert ("Set", "A") in texts
+    assert ("long element", "name") in texts
+    # tspans of one label share x (centered) and step by the line height
+    tspans = list(texts[("long element", "name")])
+    assert tspans[0].get("x") == tspans[1].get("x")
+    assert float(tspans[1].get("y")) - float(tspans[0].get("y")) == 14.0
+
+    # the two-line member box is taller than the single-line one
+    _, member_boxes, _ = _pixel_geometry(layout)
+    assert member_boxes["long element name"][3] == 36.0
+    assert member_boxes["y"][3] == 22.0
+    # and narrower than an unbroken label would be
+    assert member_boxes["long element name"][2] < 7 * len("long element name") + 18
 
 
 def test_background_transparent_and_viewbox_tight() -> None:

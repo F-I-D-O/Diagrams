@@ -98,6 +98,38 @@ def test_invalid_links_rejected(text: str, match: str) -> None:
         parse_set_system(text)
 
 
+def test_labels_resolve_and_may_contain_newlines() -> None:
+    system = parse_set_system(
+        """
+sets:
+  Mass transit: [Semi-fixed route buses, Tram]
+labels:
+  Semi-fixed route buses: "Semi-fixed\\nroute buses"
+  Mass transit: |-
+    Mass
+    transit
+"""
+    )
+    assert system.set_labels == {"Mass transit": "Mass\ntransit"}
+    assert system.element_labels == {
+        "Semi-fixed route buses": "Semi-fixed\nroute buses"
+    }
+
+
+@pytest.mark.parametrize(
+    "text, match",
+    [
+        ("sets: {A: [x]}\nlabels: nope", "'labels' must be a mapping"),
+        ("sets: {A: [x]}\nlabels: {B: b}", "neither a set nor an element"),
+        ("sets: {A: [x]}\nlabels: {A: ''}", "non-empty string label"),
+        ("sets: {A: [x], x: [A]}\nlabels: {x: y}", "both a set and an element"),
+    ],
+)
+def test_invalid_labels_rejected(text: str, match: str) -> None:
+    with pytest.raises(InputFormatError, match=match):
+        parse_set_system(text)
+
+
 @pytest.mark.parametrize(
     "text, match",
     [

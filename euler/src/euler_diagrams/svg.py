@@ -66,8 +66,9 @@ _MEMBER_BOX_HEIGHT = 22.0
 _MEMBER_STACK_GAP = 4.0  # vertical gap between boxes of co-located elements
 _MEMBER_COLUMN_GAP = 8.0  # horizontal gap between columns of a member grid
 _MEMBER_CLEARANCE = 6.0  # minimal gap between a member box and a vertical border
-# Vertical clearance exceeds half the label pill height (_LABEL_HEIGHT / 2 = 8)
-# so a label on a rectangle's top border never covers the member boxes below it.
+# Floor of the vertical clearance; the effective value grows with the tallest
+# label pill (half its height + 1) so a label on a rectangle's top border
+# never covers the member boxes below it, even when labels are multi-line.
 _MEMBER_CLEARANCE_Y = 9.0
 _COLUMN_SEARCH_LIMIT = 50_000  # exhaustive column search up to this many combinations
 _MIN_RECT_HEIGHT = 24.0
@@ -76,6 +77,7 @@ _LABEL_HEIGHT = 16.0
 _CORNER_RADIUS = 3.0
 _LABEL_FRACTIONS = [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.12, 0.88]
 _HALF_STROKE = 1.0
+_LINE_HEIGHT = 14.0  # extra height per additional label line
 _LINK_ICON_SIZE = 8.0
 _LINK_ICON_SPACE = _LINK_ICON_SIZE + 4.0  # icon plus its gap to the label text
 
@@ -97,8 +99,14 @@ def render_svg(layout: Layout) -> str:
     rectangles_px, _, member_groups = _pixel_geometry(layout)
     set_names = sorted(layout.rectangles)
     slot = {name: i for i, name in enumerate(set_names)}
+    pill_sizes = {
+        name: _pill_size(
+            _display_lines(name, layout.set_labels), name in layout.set_links
+        )
+        for name in set_names
+    }
     labels = _set_label_positions(
-        rectangles_px, [box for box, _ in member_groups], set(layout.set_links)
+        rectangles_px, [box for box, _ in member_groups], pill_sizes
     )
 
     # The viewBox is the exact bounding box of everything drawn — rectangle
@@ -147,8 +155,9 @@ def render_svg(layout: Layout) -> str:
             f'd="{_border_path(rectangles_px[name], edge, gap_lo, gap_hi)}"/>'
         )
 
-    for (x, y, w, h), label in member_groups:
-        link = layout.element_links.get(label)
+    for (x, y, w, h), name in member_groups:
+        lines = _display_lines(name, layout.element_labels)
+        link = layout.element_links.get(name)
         if link is not None:
             parts.append(f"  <a href={quoteattr(link)}>")
         parts.append(
@@ -156,23 +165,17 @@ def render_svg(layout: Layout) -> str:
             f'width="{w:g}" height="{h:g}" rx="4"/>'
         )
         text_x = x + w / 2 - (_LINK_ICON_SPACE / 2 if link is not None else 0)
-        parts.append(
-            f'  <text class="member-label" x="{text_x:g}" y="{y + h / 2 + 4:g}">'
-            f"{escape(label)}</text>"
-        )
+        parts.append(_label_text(lines, "member-label", text_x, y + h / 2))
         if link is not None:
             parts.append(
-                _link_icon(
-                    text_x + _CHAR_WIDTH * len(label) / 2 + 4,
-                    y + h / 2 - _LINK_ICON_SIZE / 2,
-                    "member-icon",
-                )
+                _link_icon_after(lines, text_x, y + h / 2, "member-icon")
             )
             parts.append("  </a>")
 
     for name in set_names:
         center_x, center_y, pill, _, _, _ = labels[name]
         pill_x, pill_y, pill_w, pill_h = pill
+        lines = _display_lines(name, layout.set_labels)
         link = layout.set_links.get(name)
         if link is not None:
             parts.append(f"  <a href={quoteattr(link)}>")
@@ -182,16 +185,11 @@ def render_svg(layout: Layout) -> str:
         )
         text_x = center_x - (_LINK_ICON_SPACE / 2 if link is not None else 0)
         parts.append(
-            f'  <text class="set-label set-ink-{slot[name]}" x="{text_x:g}" y="{center_y + 4:g}">'
-            f"{escape(name)}</text>"
+            _label_text(lines, f"set-label set-ink-{slot[name]}", text_x, center_y)
         )
         if link is not None:
             parts.append(
-                _link_icon(
-                    text_x + _CHAR_WIDTH * len(name) / 2 + 4,
-                    center_y - _LINK_ICON_SIZE / 2,
-                    f"set-icon-{slot[name]}",
-                )
+                _link_icon_after(lines, text_x, center_y, f"set-icon-{slot[name]}")
             )
             parts.append("  </a>")
     parts.append("</svg>")
@@ -222,6 +220,19 @@ def _pixel_geometry(
         grouped[layout.points[element]].append(element)
 
     rectangles = layout.rectangles
+    pill_sizes = {
+        name: _pill_size(
+            _display_lines(name, layout.set_labels), name in layout.set_links
+        )
+        for name in rectangles
+    }
+    member_sizes = {
+        element: _member_box_size(
+            _display_lines(element, layout.element_labels),
+            element in layout.element_links,
+        )
+        for element in layout.points
+    }
     x_axis = dict(
         boundaries={r.x_min for r in rectangles.values()}
         | {r.x_max for r in rectangles.values()},
@@ -231,7 +242,7 @@ def _pixel_geometry(
             (
                 r.x_min,
                 r.x_max,
-                _pill_width(name, name in layout.set_links)
+                pill_sizes[name][0]
                 + 6
                 + 2 * _CORNER_RADIUS
                 + insets[name]["x_min"]
@@ -240,8 +251,13 @@ def _pixel_geometry(
             for name, r in rectangles.items()
         ],
     )
+    # Top-edge labels reach half their pill below the border; the vertical
+    # clearance must exceed that so labels never cover the member boxes.
+    label_clearance = max(
+        (height / 2 + 1 for _, height in pill_sizes.values()), default=0.0
+    )
     y_axis = dict(
-        clearance=_MEMBER_CLEARANCE_Y,
+        clearance=max(_MEMBER_CLEARANCE_Y, label_clearance),
         boundaries={r.y_min for r in rectangles.values()}
         | {r.y_max for r in rectangles.values()},
         start_inset=_line_insets(rectangles, insets, "y_min"),
@@ -255,10 +271,9 @@ def _pixel_geometry(
             for name, r in rectangles.items()
         ],
     )
-    linked_elements = set(layout.element_links)
-    columns = _choose_columns(grouped, x_axis, y_axis, linked_elements)
+    columns = _choose_columns(grouped, x_axis, y_axis, member_sizes)
     grids = {
-        point: _member_grid(elements, columns[point], linked_elements)
+        point: _member_grid(elements, columns[point], member_sizes)
         for point, elements in grouped.items()
     }
     pos_x = _axis_positions(half=_grid_halves(grids, 0), **x_axis)
@@ -297,15 +312,51 @@ def _link_icon(x: float, y: float, ink_class: str) -> str:
     )
 
 
-def _member_box_width(element: str, linked: bool = False) -> float:
-    """Pixel width of one member box."""
-    return max(24.0, _CHAR_WIDTH * len(element) + 18.0) + (
-        _LINK_ICON_SPACE if linked else 0.0
+def _label_text(
+    lines: list[str], css_class: str, center_x: float, center_y: float
+) -> str:
+    """A ``<text>`` centered at the given point; multi-line via tspans."""
+    if len(lines) == 1:
+        return (
+            f'  <text class="{css_class}" x="{center_x:g}" y="{center_y + 4:g}">'
+            f"{escape(lines[0])}</text>"
+        )
+    first_baseline = center_y + 4 - (len(lines) - 1) * _LINE_HEIGHT / 2
+    tspans = "".join(
+        f'<tspan x="{center_x:g}" y="{first_baseline + i * _LINE_HEIGHT:g}">'
+        f"{escape(line)}</tspan>"
+        for i, line in enumerate(lines)
+    )
+    return f'  <text class="{css_class}">{tspans}</text>'
+
+
+def _link_icon_after(
+    lines: list[str], center_x: float, center_y: float, ink_class: str
+) -> str:
+    """The link icon placed after the last line of a centered label."""
+    last_line_center_y = center_y + (len(lines) - 1) * _LINE_HEIGHT / 2
+    return _link_icon(
+        center_x + _CHAR_WIDTH * len(lines[-1]) / 2 + 4,
+        last_line_center_y - _LINK_ICON_SIZE / 2,
+        ink_class,
     )
 
 
+def _display_lines(name: str, display_labels: dict[str, str]) -> list[str]:
+    """The lines of a set's or element's display label (default: its name)."""
+    return display_labels.get(name, name).split("\n")
+
+
+def _member_box_size(lines: list[str], linked: bool = False) -> tuple[float, float]:
+    """Pixel size of one member box for a display label of ``lines``."""
+    width = max(24.0, _CHAR_WIDTH * max(len(line) for line in lines) + 18.0) + (
+        _LINK_ICON_SPACE if linked else 0.0
+    )
+    return width, _MEMBER_BOX_HEIGHT + (len(lines) - 1) * _LINE_HEIGHT
+
+
 def _member_grid(
-    elements: list[str], columns: int, linked: frozenset[str] | set[str] = frozenset()
+    elements: list[str], columns: int, sizes: dict[str, tuple[float, float]]
 ) -> tuple[dict[str, Box], float, float]:
     """Pack a group of co-located elements into a row-major grid.
 
@@ -316,13 +367,18 @@ def _member_grid(
     """
     columns = min(columns, len(elements))
     rows = math.ceil(len(elements) / columns)
-    widths = [_member_box_width(element, element in linked) for element in elements]
+    widths = [sizes[element][0] for element in elements]
+    heights = [sizes[element][1] for element in elements]
     column_width = [
         max(widths[i] for i in range(c, len(elements), columns))
         for c in range(columns)
     ]
+    row_height = [
+        max(heights[i] for i in range(r * columns, min((r + 1) * columns, len(elements))))
+        for r in range(rows)
+    ]
     total_width = sum(column_width) + (columns - 1) * _MEMBER_COLUMN_GAP
-    total_height = rows * _MEMBER_BOX_HEIGHT + (rows - 1) * _MEMBER_STACK_GAP
+    total_height = sum(row_height) + (rows - 1) * _MEMBER_STACK_GAP
 
     offsets: dict[str, Box] = {}
     for i, element in enumerate(elements):
@@ -332,11 +388,14 @@ def _member_grid(
             + sum(column_width[:column])
             + column * _MEMBER_COLUMN_GAP
         )
+        row_top = (
+            -total_height / 2 + sum(row_height[:row]) + row * _MEMBER_STACK_GAP
+        )
         offsets[element] = (
             column_left + (column_width[column] - widths[i]) / 2,
-            -total_height / 2 + row * (_MEMBER_BOX_HEIGHT + _MEMBER_STACK_GAP),
+            row_top + (row_height[row] - heights[i]) / 2,
             widths[i],
-            _MEMBER_BOX_HEIGHT,
+            heights[i],
         )
     return offsets, total_width, total_height
 
@@ -356,7 +415,7 @@ def _choose_columns(
     grouped: dict[tuple[int, int], list[str]],
     x_axis: dict,
     y_axis: dict,
-    linked: frozenset[str] | set[str] = frozenset(),
+    sizes: dict[str, tuple[float, float]],
 ) -> dict[tuple[int, int], int]:
     """Choose a column count per member group minimizing the diagram size.
 
@@ -373,7 +432,7 @@ def _choose_columns(
     def extents(point: tuple[int, int], columns: int) -> tuple[float, float]:
         key = (point, columns)
         if key not in extent_cache:
-            extent_cache[key] = _member_grid(grouped[point], columns, linked)[1:]
+            extent_cache[key] = _member_grid(grouped[point], columns, sizes)[1:]
         return extent_cache[key]
 
     def score(assignment: dict[tuple[int, int], int]) -> tuple[float, float, int]:
@@ -541,15 +600,20 @@ def _edge_insets(layout: Layout) -> dict[str, dict[str, float]]:
     return insets
 
 
-def _pill_width(name: str, linked: bool = False) -> float:
-    """Pixel width of the pill behind a set label."""
-    return _CHAR_WIDTH * len(name) + 12.0 + (_LINK_ICON_SPACE if linked else 0.0)
+def _pill_size(lines: list[str], linked: bool = False) -> tuple[float, float]:
+    """Pixel size of the pill behind a set label of ``lines``."""
+    width = (
+        _CHAR_WIDTH * max(len(line) for line in lines)
+        + 12.0
+        + (_LINK_ICON_SPACE if linked else 0.0)
+    )
+    return width, _LABEL_HEIGHT + (len(lines) - 1) * _LINE_HEIGHT
 
 
 def _set_label_positions(
     rectangles_px: dict[str, Box],
     member_boxes: list[Box],
-    linked_sets: frozenset[str] | set[str] = frozenset(),
+    pill_sizes: dict[str, tuple[float, float]] | None = None,
 ) -> dict[str, tuple[float, float, Box, float, float, str]]:
     """Place each set label centered on its rectangle's border.
 
@@ -560,6 +624,8 @@ def _set_label_positions(
     to the bottom edge only when every top position would cover a member box
     or another label — and even then only if the bottom is strictly better.
     """
+    if pill_sizes is None:
+        pill_sizes = {name: _pill_size([name]) for name in rectangles_px}
     edge_segments = {
         name: _edges(rectangle) for name, rectangle in rectangles_px.items()
     }
@@ -570,7 +636,7 @@ def _set_label_positions(
     )
     for name in order:
         x, y, w, h = rectangles_px[name]
-        pill_width = _pill_width(name, name in linked_sets)
+        pill_width, pill_height = pill_sizes[name]
         gap_half = pill_width / 2 + 3
         foreign_segments = [
             segment
@@ -600,9 +666,9 @@ def _set_label_positions(
             for center_x in candidates:
                 box = (
                     center_x - pill_width / 2,
-                    edge_y - _LABEL_HEIGHT / 2,
+                    edge_y - pill_height / 2,
                     pill_width,
-                    _LABEL_HEIGHT,
+                    pill_height,
                 )
                 score = penalty(box)
                 if edge_best is None or score < edge_best[0]:
@@ -620,9 +686,9 @@ def _set_label_positions(
         gap_hi = min(x + w - _CORNER_RADIUS, center_x + gap_half)
         pill = (
             center_x - pill_width / 2,
-            center_y - _LABEL_HEIGHT / 2,
+            center_y - pill_height / 2,
             pill_width,
-            _LABEL_HEIGHT,
+            pill_height,
         )
         label_obstacles.append(pill)
         placements[name] = (center_x, center_y, pill, gap_lo, gap_hi, edge)

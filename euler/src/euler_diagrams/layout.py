@@ -63,6 +63,8 @@ class Layout:
     name: str | None = None
     set_links: dict[str, str] = field(default_factory=dict)
     element_links: dict[str, str] = field(default_factory=dict)
+    set_labels: dict[str, str] = field(default_factory=dict)
+    element_labels: dict[str, str] = field(default_factory=dict)
 
 
 def layout_2d(system: SetSystem) -> Layout:
@@ -136,6 +138,8 @@ def layout_2d(system: SetSystem) -> Layout:
         name=system.name,
         set_links=dict(system.set_links),
         element_links=dict(system.element_links),
+        set_labels=dict(system.set_labels),
+        element_labels=dict(system.element_labels),
     )
 
 

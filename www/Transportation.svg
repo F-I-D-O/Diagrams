@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="32 25 327 439" width="327" height="439" role="img">
+  <title>Euler diagram</title>
+  <style>
+    svg { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .title { fill: #0b0b0b; font-size: 14px; font-weight: 600; }
+    .set-label { font-size: 12px; font-weight: 600; text-anchor: middle; }
+    .member-label { fill: #0b0b0b; font-size: 12px; text-anchor: middle; }
+    .member-box { fill: #fcfcfb; stroke: #c3c2b7; stroke-width: 1; }
+    .label-pill { fill: #fcfcfb; }
+    a:hover .set-label { text-decoration: underline; }
+    a:hover .member-box { stroke: #898781; }
+    .link-icon { fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+    .member-icon { stroke: #52514e; }
+    .set-fill-0 { fill: #2a78d6; fill-opacity: .13; }
+    .set-stroke-0 { fill: none; stroke: #2a78d6; stroke-width: 2; }
+    .set-ink-0 { fill: #2a78d6; }
+    .set-icon-0 { stroke: #2a78d6; }
+    .set-fill-1 { fill: #eb6834; fill-opacity: .13; }
+    .set-stroke-1 { fill: none; stroke: #eb6834; stroke-width: 2; }
+    .set-ink-1 { fill: #eb6834; }
+    .set-icon-1 { stroke: #eb6834; }
+    .set-fill-2 { fill: #1baf7a; fill-opacity: .13; }
+    .set-stroke-2 { fill: none; stroke: #1baf7a; stroke-width: 2; }
+    .set-ink-2 { fill: #1baf7a; }
+    .set-icon-2 { stroke: #1baf7a; }
+    .set-fill-3 { fill: #eda100; fill-opacity: .13; }
+    .set-stroke-3 { fill: none; stroke: #eda100; stroke-width: 2; }
+    .set-ink-3 { fill: #eda100; }
+    .set-icon-3 { stroke: #eda100; }
+    .set-fill-4 { fill: #e87ba4; fill-opacity: .13; }
+    .set-stroke-4 { fill: none; stroke: #e87ba4; stroke-width: 2; }
+    .set-ink-4 { fill: #e87ba4; }
+    .set-icon-4 { stroke: #e87ba4; }
+    .set-fill-5 { fill: #008300; fill-opacity: .13; }
+    .set-stroke-5 { fill: none; stroke: #008300; stroke-width: 2; }
+    .set-ink-5 { fill: #008300; }
+    .set-icon-5 { stroke: #008300; }
+    .set-fill-6 { fill: #4a3aa7; fill-opacity: .13; }
+    .set-stroke-6 { fill: none; stroke: #4a3aa7; stroke-width: 2; }
+    .set-ink-6 { fill: #4a3aa7; }
+    .set-icon-6 { stroke: #4a3aa7; }
+    .set-fill-7 { fill: #e34948; fill-opacity: .13; }
+    .set-stroke-7 { fill: none; stroke: #e34948; stroke-width: 2; }
+    .set-ink-7 { fill: #e34948; }
+    .set-icon-7 { stroke: #e34948; }
+    @media (prefers-color-scheme: dark) {
+      .title, .member-label { fill: #ffffff; }
+      .member-box { fill: #1a1a19; stroke: #383835; }
+      .label-pill { fill: #1a1a19; }
+      .member-icon { stroke: #c3c2b7; }
+      .set-fill-0 { fill: #3987e5; fill-opacity: .2; }
+      .set-stroke-0 { stroke: #3987e5; }
+      .set-ink-0 { fill: #3987e5; }
+      .set-icon-0 { stroke: #3987e5; }
+      .set-fill-1 { fill: #d95926; fill-opacity: .2; }
+      .set-stroke-1 { stroke: #d95926; }
+      .set-ink-1 { fill: #d95926; }
+      .set-icon-1 { stroke: #d95926; }
+      .set-fill-2 { fill: #199e70; fill-opacity: .2; }
+      .set-stroke-2 { stroke: #199e70; }
+      .set-ink-2 { fill: #199e70; }
+      .set-icon-2 { stroke: #199e70; }
+      .set-fill-3 { fill: #c98500; fill-opacity: .2; }
+      .set-stroke-3 { stroke: #c98500; }
+      .set-ink-3 { fill: #c98500; }
+      .set-icon-3 { stroke: #c98500; }
+      .set-fill-4 { fill: #d55181; fill-opacity: .2; }
+      .set-stroke-4 { stroke: #d55181; }
+      .set-ink-4 { fill: #d55181; }
+      .set-icon-4 { stroke: #d55181; }
+      .set-fill-5 { fill: #008300; fill-opacity: .2; }
+      .set-stroke-5 { stroke: #008300; }
+      .set-ink-5 { fill: #008300; }
+      .set-icon-5 { stroke: #008300; }
+      .set-fill-6 { fill: #9085e9; fill-opacity: .2; }
+      .set-stroke-6 { stroke: #9085e9; }
+      .set-ink-6 { fill: #9085e9; }
+      .set-icon-6 { stroke: #9085e9; }
+      .set-fill-7 { fill: #e66767; fill-opacity: .2; }
+      .set-stroke-7 { stroke: #e66767; }
+      .set-ink-7 { fill: #e66767; }
+      .set-icon-7 { stroke: #e66767; }
+    }
+  </style>
+  <rect class="set-fill-3" x="33" y="80" width="325" height="223" rx="3"/>
+  <rect class="set-fill-0" x="38" y="200" width="315" height="164" rx="3"/>
+  <rect class="set-fill-2" x="38" y="33" width="315" height="89" rx="3"/>
+  <rect class="set-fill-1" x="43" y="261" width="175" height="202" rx="3"/>
+  <path class="set-stroke-3" d="M 215 80 H 355 A 3 3 0 0 1 358 83 V 300 A 3 3 0 0 1 355 303 H 36 A 3 3 0 0 1 33 300 V 83 A 3 3 0 0 1 36 80 H 176"/>
+  <path class="set-stroke-0" d="M 221 200 H 350 A 3 3 0 0 1 353 203 V 361 A 3 3 0 0 1 350 364 H 41 A 3 3 0 0 1 38 361 V 203 A 3 3 0 0 1 41 200 H 170"/>
+  <path class="set-stroke-2" d="M 256 33 H 350 A 3 3 0 0 1 353 36 V 119 A 3 3 0 0 1 350 122 H 41 A 3 3 0 0 1 38 119 V 36 A 3 3 0 0 1 41 33 H 135"/>
+  <path class="set-stroke-1" d="M 187.5 261 H 215 A 3 3 0 0 1 218 264 V 460 A 3 3 0 0 1 215 463 H 46 A 3 3 0 0 1 43 460 V 264 A 3 3 0 0 1 46 261 H 73.5"/>
+  <rect class="member-box" x="97" y="43" width="67" height="22" rx="4"/>
+  <text class="member-label" x="130.5" y="58">Bicycle</text>
+  <a href="https://en.wikipedia.org/wiki/Bicycle-sharing_system">
+  <rect class="member-box" x="66.5" y="90" width="128" height="22" rx="4"/>
+  <text class="member-label" x="124.5" y="105">Shared bicycle</text>
+  <path class="link-icon member-icon" transform="translate(177.5 97)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <rect class="member-box" x="63" y="137" width="88" height="22" rx="4"/>
+  <text class="member-label" x="107" y="152">Carsharing</text>
+  <rect class="member-box" x="159" y="137" width="39" height="22" rx="4"/>
+  <text class="member-label" x="178.5" y="152">TNC</text>
+  <a href="https://en.wikipedia.org/wiki/Taxi">
+  <rect class="member-box" x="78" y="163" width="58" height="22" rx="4"/>
+  <text class="member-label" x="101" y="178">Taxi</text>
+  <path class="link-icon member-icon" transform="translate(119 170)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <rect class="member-box" x="62" y="210" width="137" height="36" rx="4"/>
+  <text class="member-label"><tspan x="130.5" y="225">Demand-responsive</tspan><tspan x="130.5" y="239">bus/van/car</tspan></text>
+  <rect class="member-box" x="51.5" y="271" width="158" height="22" rx="4"/>
+  <text class="member-label" x="130.5" y="286">Semi-fixed route bus</text>
+  <rect class="member-box" x="60.5" y="379" width="39" height="22" rx="4"/>
+  <text class="member-label" x="80" y="394">Bus</text>
+  <rect class="member-box" x="138" y="379" width="53" height="22" rx="4"/>
+  <text class="member-label" x="164.5" y="394">Ferry</text>
+  <rect class="member-box" x="50" y="405" width="60" height="22" rx="4"/>
+  <text class="member-label" x="80" y="420">Subway</text>
+  <rect class="member-box" x="138" y="405" width="53" height="22" rx="4"/>
+  <text class="member-label" x="164.5" y="420">Train</text>
+  <a href="https://en.wikipedia.org/wiki/Tram">
+  <rect class="member-box" x="51" y="431" width="58" height="22" rx="4"/>
+  <text class="member-label" x="74" y="446">Tram</text>
+  <path class="link-icon member-icon" transform="translate(92 438)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <a href="https://en.wikipedia.org/wiki/Trolleybus">
+  <rect class="member-box" x="118" y="431" width="93" height="22" rx="4"/>
+  <text class="member-label" x="158.5" y="446">Trollybus</text>
+  <path class="link-icon member-icon" transform="translate(194 438)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <rect class="member-box" x="230" y="318" width="116" height="36" rx="4"/>
+  <text class="member-label"><tspan x="288" y="333">Social service</tspan><tspan x="288" y="347">transport</tspan></text>
+  <a href="https://en.wikipedia.org/wiki/Demand-responsive_transport">
+  <rect class="label-pill" x="173" y="192" width="45" height="16" rx="4"/>
+  <text class="set-label set-ink-0" x="189.5" y="204">DRT</text>
+  <path class="link-icon set-icon-0" transform="translate(204 196)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <a href="https://en.wikipedia.org/wiki/Public_transport">
+  <rect class="label-pill" x="76.5" y="253" width="108" height="16" rx="4"/>
+  <text class="set-label set-ink-1" x="124.5" y="265">Mass transit</text>
+  <path class="link-icon set-icon-1" transform="translate(170.5 257)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <a href="https://en.wikipedia.org/wiki/Micromobility">
+  <rect class="label-pill" x="138" y="25" width="115" height="16" rx="4"/>
+  <text class="set-label set-ink-2" x="189.5" y="37">Micromobility</text>
+  <path class="link-icon set-icon-2" transform="translate(239 29)" d="M1 7 L7 1 M3 1 H7 V5"/>
+  </a>
+  <rect class="label-pill" x="179" y="72" width="33" height="16" rx="4"/>
+  <text class="set-label set-ink-3" x="195.5" y="84">MoD</text>
+</svg>

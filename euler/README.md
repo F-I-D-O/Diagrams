@@ -92,6 +92,11 @@ whole box clickable (rendered as native SVG `<a>` anchors, with a hover
 affordance). Linked labels carry a tiny external-link arrow after the text —
 in the set's color on labels, in muted ink inside member boxes.
 
+The optional `labels` mapping overrides the displayed label of any set or
+element by name; newlines in the value (quoted `"…\n…"` or a `|-` block
+scalar) render as multi-line labels, with boxes, pills, and spacing sized
+accordingly. The name itself stays the identity used in `sets` and `links`.
+
 ## Development
 
 ```bash

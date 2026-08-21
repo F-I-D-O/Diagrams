@@ -20,6 +20,8 @@ class SetSystem:
     name: str | None = None
     set_links: dict[str, str] = field(default_factory=dict)
     element_links: dict[str, str] = field(default_factory=dict)
+    set_labels: dict[str, str] = field(default_factory=dict)
+    element_labels: dict[str, str] = field(default_factory=dict)
 
     @cached_property
     def elements(self) -> frozenset[str]:

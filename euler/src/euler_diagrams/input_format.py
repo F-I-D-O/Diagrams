@@ -12,7 +12,7 @@ import yaml
 
 from .model import SetSystem
 
-_TOP_LEVEL_KEYS = {"name", "sets", "links"}
+_TOP_LEVEL_KEYS = {"name", "sets", "links", "labels"}
 
 
 class InputFormatError(ValueError):
@@ -83,47 +83,69 @@ def parse_set_system(text: str, source: str = "<string>") -> SetSystem:
             raise InputFormatError(f"{source}: set name {set_name!r} is not a string")
         sets[set_name] = _validate_members(set_name, raw_members, source)
 
-    set_links, element_links = _validate_links(document.get("links"), sets, source)
+    set_links, element_links = _resolve_flat_mapping(
+        document.get("links"), sets, source, key="links", value_noun="URL"
+    )
+    set_labels, element_labels = _resolve_flat_mapping(
+        document.get("labels"), sets, source, key="labels", value_noun="label"
+    )
     return SetSystem(
-        sets=sets, name=name, set_links=set_links, element_links=element_links
+        sets=sets,
+        name=name,
+        set_links=set_links,
+        element_links=element_links,
+        set_labels=set_labels,
+        element_labels=element_labels,
     )
 
 
-def _validate_links(
-    raw_links: object, sets: dict[str, frozenset[str]], source: str
+def _resolve_flat_mapping(
+    raw: object,
+    sets: dict[str, frozenset[str]],
+    source: str,
+    key: str,
+    value_noun: str,
 ) -> tuple[dict[str, str], dict[str, str]]:
-    """Resolve the flat ``links`` mapping against set and element names."""
-    if raw_links is None:
+    """Resolve a flat name→string mapping against set and element names.
+
+    Shared by ``links`` and ``labels``: keys must name exactly one of a set
+    or an element, values must be non-empty strings.
+    """
+    if raw is None:
         return {}, {}
-    if not isinstance(raw_links, dict):
+    if not isinstance(raw, dict):
         raise InputFormatError(
-            f"{source}: 'links' must be a mapping of set or element names to URLs"
+            f"{source}: '{key}' must be a mapping of set or element names to "
+            f"{value_noun}s"
         )
     elements = frozenset().union(*sets.values()) if sets else frozenset()
-    set_links: dict[str, str] = {}
-    element_links: dict[str, str] = {}
-    for target, url in raw_links.items():
+    for_sets: dict[str, str] = {}
+    for_elements: dict[str, str] = {}
+    for target, value in raw.items():
         if not isinstance(target, str):
-            raise InputFormatError(f"{source}: link target {target!r} is not a string")
-        if not isinstance(url, str) or not url:
             raise InputFormatError(
-                f"{source}: link for {target!r} must be a non-empty string URL"
+                f"{source}: {key} target {target!r} is not a string"
+            )
+        if not isinstance(value, str) or not value:
+            raise InputFormatError(
+                f"{source}: {key} entry for {target!r} must be a non-empty "
+                f"string {value_noun}"
             )
         is_set, is_element = target in sets, target in elements
         if is_set and is_element:
             raise InputFormatError(
-                f"{source}: link target {target!r} names both a set and an "
+                f"{source}: {key} target {target!r} names both a set and an "
                 "element; rename one of them to disambiguate"
             )
         if is_set:
-            set_links[target] = url
+            for_sets[target] = value
         elif is_element:
-            element_links[target] = url
+            for_elements[target] = value
         else:
             raise InputFormatError(
-                f"{source}: link target {target!r} is neither a set nor an element"
+                f"{source}: {key} target {target!r} is neither a set nor an element"
             )
-    return set_links, element_links
+    return for_sets, for_elements
 
 
 def _validate_members(set_name: str, raw_members: object, source: str) -> frozenset[str]:

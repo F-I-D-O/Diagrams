@@ -21,6 +21,7 @@ sets:
 | `name`  | no       | string                        | Diagram title.                   |
 | `sets`  | yes      | mapping: string → string list | Each entry is one set with its elements. |
 | `links` | no       | mapping: string → string      | URL per set or element name. Set links attach to the set's border label, element links make the element's whole box clickable. |
+| `labels` | no      | mapping: string → string      | Display label per set or element name. May contain newlines (quoted `"…\n…"` or a `\|-` block scalar) for multi-line labels; the name itself stays the identity used in `sets` and `links`. |
 
 Rules, all violations are hard errors:
 
@@ -33,10 +34,11 @@ Rules, all violations are hard errors:
   allowed.
 - Duplicate keys anywhere in the document are rejected (YAML parsers would
   otherwise silently keep only the last one).
-- Every `links` key must name an existing set or element; a key naming
-  *both* a set and an element is rejected (the flat mapping cannot tell
-  which one is meant — rename one of them). URLs must be non-empty strings;
-  the scheme is not restricted (relative URLs and `mailto:` are fine).
+- Every `links` or `labels` key must name an existing set or element; a key
+  naming *both* a set and an element is rejected (the flat mapping cannot
+  tell which one is meant — rename one of them). Values must be non-empty
+  strings; link schemes are not restricted (relative URLs and `mailto:` are
+  fine).
 
 A set with no elements is allowed and written as `myset: []` (or an empty
 value: `myset:`).
