@@ -1,0 +1,14 @@
+
+sets:
+  Multi-vehicle: [CVRP, CVRPTW, DARPP, PDP, PDPTW, VRP, VRPTW]
+  Single-vehicle: [SVDARP, TSP, TSPTW]
+  Time-windows: [CVRPTW, DARP, PDPTW, SVDARP, TSPTW, VRPTW]
+  Passanger-related constraints: [DARP, SVDARP]
+  Origin-destination transport: [CVRP, CVRPTW, DARP, PDP, PDPTW, SVDARP, VRP, VRPTW]
+  Origin in depot: [CVRP, CVRPTW, VRP, VRPTW]
+  General origin: [DARP, PDP, PDPTW, SVDARP]
+  Limited capacity: [CVRP, CVRPTW, DARP, SVDARP]
+
+links:
+  TSP: https://en.wikipedia.org/wiki/Travelling_salesman_problem
+  VRP: https://en.wikipedia.org/wiki/Vehicle_routing_problem
