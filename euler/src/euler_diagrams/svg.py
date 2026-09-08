@@ -72,7 +72,29 @@ _MEMBER_CLEARANCE = 6.0  # minimal gap between a member box and a vertical borde
 _MEMBER_CLEARANCE_Y = 9.0
 _COLUMN_SEARCH_LIMIT = 50_000  # exhaustive column search up to this many combinations
 _MIN_RECT_HEIGHT = 24.0
-_CHAR_WIDTH = 7.0  # estimated glyph advance of the 12px system sans
+_CHAR_WIDTH = 7.0  # coarse fallback glyph advance of the 12px system sans
+_LABEL_PAD = 5.0  # horizontal padding of a set-label pill, each side
+
+# Approximate per-glyph advance widths of the 12px system sans, so label
+# padding stays constant instead of growing with the length estimation error.
+_GLYPH_WIDTHS = {
+    **{c: 3.3 for c in "iljI.,:;'|"},
+    **{c: 4.2 for c in "ftr-()[] "},
+    **{c: 6.4 for c in "abcdeghknopqsuvxyz0123456789"},
+    **{c: 7.8 for c in "ABCDEFGHJKLNOPQRSTUVXYZ"},
+    **{c: 10.4 for c in "mMW&@"},
+    "w": 8.9,
+    "/": 4.7,
+    '"': 4.5,
+    "?": 5.9,
+}
+_BOLD_FACTOR = 1.05  # set labels are font-weight 600
+
+
+def _text_width(text: str, bold: bool = False) -> float:
+    """Approximate rendered width of ``text`` in the 12px system sans."""
+    width = sum(_GLYPH_WIDTHS.get(c, _CHAR_WIDTH) for c in text)
+    return width * _BOLD_FACTOR if bold else width
 _LABEL_HEIGHT = 16.0
 _CORNER_RADIUS = 3.0
 _LABEL_FRACTIONS = [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.12, 0.88]
@@ -189,7 +211,9 @@ def render_svg(layout: Layout) -> str:
         )
         if link is not None:
             parts.append(
-                _link_icon_after(lines, text_x, center_y, f"set-icon-{slot[name]}")
+                _link_icon_after(
+                    lines, text_x, center_y, f"set-icon-{slot[name]}", bold=True
+                )
             )
             parts.append("  </a>")
     parts.append("</svg>")
@@ -331,12 +355,16 @@ def _label_text(
 
 
 def _link_icon_after(
-    lines: list[str], center_x: float, center_y: float, ink_class: str
+    lines: list[str],
+    center_x: float,
+    center_y: float,
+    ink_class: str,
+    bold: bool = False,
 ) -> str:
     """The link icon placed after the last line of a centered label."""
     last_line_center_y = center_y + (len(lines) - 1) * _LINE_HEIGHT / 2
     return _link_icon(
-        center_x + _CHAR_WIDTH * len(lines[-1]) / 2 + 4,
+        center_x + _text_width(lines[-1], bold) / 2 + 4,
         last_line_center_y - _LINK_ICON_SIZE / 2,
         ink_class,
     )
@@ -349,7 +377,7 @@ def _display_lines(name: str, display_labels: dict[str, str]) -> list[str]:
 
 def _member_box_size(lines: list[str], linked: bool = False) -> tuple[float, float]:
     """Pixel size of one member box for a display label of ``lines``."""
-    width = max(24.0, _CHAR_WIDTH * max(len(line) for line in lines) + 18.0) + (
+    width = max(24.0, max(_text_width(line) for line in lines) + 18.0) + (
         _LINK_ICON_SPACE if linked else 0.0
     )
     return width, _MEMBER_BOX_HEIGHT + (len(lines) - 1) * _LINE_HEIGHT
@@ -603,8 +631,8 @@ def _edge_insets(layout: Layout) -> dict[str, dict[str, float]]:
 def _pill_size(lines: list[str], linked: bool = False) -> tuple[float, float]:
     """Pixel size of the pill behind a set label of ``lines``."""
     width = (
-        _CHAR_WIDTH * max(len(line) for line in lines)
-        + 12.0
+        max(_text_width(line, bold=True) for line in lines)
+        + 2 * _LABEL_PAD
         + (_LINK_ICON_SPACE if linked else 0.0)
     )
     return width, _LABEL_HEIGHT + (len(lines) - 1) * _LINE_HEIGHT
